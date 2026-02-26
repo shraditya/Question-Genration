@@ -266,39 +266,146 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
             return "General Knowledge"
 
 
-    def llm_tag_questions(self, questions: list) -> list:
+    def _resolve_answer_text(self, q: dict) -> str:
+        """Extract the correct answer text from a question dict."""
+        options = q.get('options', {})
+        ans_key = q.get('correct_answer', '')
+        if isinstance(options, dict):
+            return next(
+                (v for k, v in options.items()
+                 if str(k).strip().upper() == str(ans_key).strip().upper()),
+                str(ans_key)
+            )
+        return str(ans_key)
+
+    def _tag_batch(self, batch: list) -> list:
         """
-        Tag every question using the Groq LLM (question text + correct answer only).
-        Only the 'tags' field is added/updated on each question.
-          - LLM confident  → tags = ["topic1", "topic2"]
-          - LLM unsure     → tags = []  (user fills in via option 8)
+        Send a batch of questions to Groq in ONE API call.
+        Returns a list of tag strings (same length as batch).
+        Each tag is guaranteed to be one of ALLOWED_TAGS.
         """
-        print(f"\n🤖 LLM tagging {len(questions)} question(s) via Groq...")
+        tag_list = "\n".join(f"- {t}" for t in self.ALLOWED_TAGS)
 
-        for i, q in enumerate(questions, 1):
-            q_text  = q.get('question', '')
-            options = q.get('options', {})
-            ans_key = q.get('correct_answer', '')
-            if isinstance(options, dict):
-                ans_text = next(
-                    (v for k, v in options.items()
-                     if str(k).strip().upper() == str(ans_key).strip().upper()),
-                    str(ans_key)
-                )
-            else:
-                ans_text = str(ans_key)
+        # Build the numbered question list
+        lines = []
+        for idx, q in enumerate(batch, 1):
+            q_text   = q.get('question', '')
+            ans_text = self._resolve_answer_text(q)
+            lines.append(f"{idx}. Q: {q_text}\n   Answer: {ans_text}")
+        questions_block = "\n\n".join(lines)
 
-            tag_str = self.auto_tag_category(q_text, ans_text)
+        prompt = (
+            "You are an exam question classifier.\n"
+            "Classify each question below into EXACTLY ONE category from this list:\n\n"
+            f"{tag_list}\n\n"
+            "Rules:\n"
+            "- Return ONLY a valid JSON array with one tag per question, in order.\n"
+            "- Each tag must be copied exactly from the list above.\n"
+            "- Use \"General Knowledge\" if unsure.\n"
+            "- No explanations, no extra text — ONLY the JSON array.\n\n"
+            "Example output for 3 questions:\n"
+            "[\"Science\", \"Geography\", \"History\"]\n\n"
+            f"Questions:\n{questions_block}\n\n"
+            "JSON array of tags:"
+        )
 
-            if tag_str:
-                q['tags'] = [t.strip() for t in tag_str.split(',') if t.strip()]
-                status    = f"✅ → {tag_str}"
-            else:
-                q['tags'] = []          # empty = needs manual input
-                status    = "⚠️  unsure — needs manual input"
+        try:
+            response = self._make_api_call_with_retry(prompt)
 
-            print(f"   [{i}/{len(questions)}] {status}")
+            # Extract JSON array from response
+            start = response.find('[')
+            end   = response.rfind(']') + 1
+            if start == -1 or end == 0:
+                raise ValueError("No JSON array found in response")
 
+            raw_tags = json.loads(response[start:end])
+
+            # Validate & map each returned tag to ALLOWED_TAGS
+            validated = []
+            allowed_lower = {t.lower(): t for t in self.ALLOWED_TAGS}
+            for raw in raw_tags:
+                raw_s = str(raw).strip().strip('"\'')
+                # Exact match (case-insensitive)
+                tag = allowed_lower.get(raw_s.lower())
+                if not tag:
+                    # Partial match
+                    tag = next(
+                        (t for t in self.ALLOWED_TAGS
+                         if t.lower() in raw_s.lower() or raw_s.lower() in t.lower()),
+                        "General Knowledge"
+                    )
+                validated.append(tag)
+
+            # Pad/trim to match batch size
+            while len(validated) < len(batch):
+                validated.append("General Knowledge")
+            return validated[:len(batch)]
+
+        except Exception as e:
+            # On any failure, fall back to General Knowledge for the whole batch
+            return ["General Knowledge"] * len(batch)
+
+    def llm_tag_questions(self, questions: list,
+                          batch_size: int = 50,
+                          max_workers: int = 5) -> list:
+        """
+        Tag a list of questions using Groq LLM with batching + parallel workers.
+
+        Performance vs sequential:
+          1 q/call  → 5 000 qs ≈ 83 min
+          batch=50  → 5 000 qs ≈  4 min
+          batch=50 + 5 workers → 5 000 qs ≈ < 1 min
+
+        Args:
+            questions:   List of question dicts.
+            batch_size:  Questions per API call  (default 50).
+            max_workers: Parallel API calls       (default 5).
+        """
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        import threading
+
+        total   = len(questions)
+        batches = [questions[i:i + batch_size]
+                   for i in range(0, total, batch_size)]
+
+        print(f"\n🤖 LLM tagging {total} question(s) | "
+              f"batch={batch_size} | workers={max_workers} | "
+              f"batches={len(batches)}")
+
+        # Thread-safe progress counter
+        done_count = [0]
+        lock = threading.Lock()
+
+        # results[batch_index] = list of tags for that batch
+        results = [None] * len(batches)
+
+        def process_batch(args):
+            batch_idx, batch = args
+            tags = self._tag_batch(batch)
+            with lock:
+                done_count[0] += 1
+                pct = 100 * done_count[0] / len(batches)
+                qs_done = min((done_count[0]) * batch_size, total)
+                print(f"   [{qs_done}/{total}]  {pct:.0f}% complete", flush=True)
+            return batch_idx, tags
+
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {
+                pool.submit(process_batch, (i, b)): i
+                for i, b in enumerate(batches)
+            }
+            for future in as_completed(futures):
+                batch_idx, tags = future.result()
+                results[batch_idx] = tags
+
+        # Apply tags back to questions in original order
+        for batch_idx, batch in enumerate(batches):
+            tags_for_batch = results[batch_idx] or ["General Knowledge"] * len(batch)
+            for q, tag in zip(batch, tags_for_batch):
+                q['tags'] = [tag]
+
+        tagged = sum(1 for q in questions if q.get('tags'))
+        print(f"\n✅ Done — {tagged}/{total} question(s) tagged.")
         return questions
 
     def auto_tag_questions(self, questions: list) -> list:
