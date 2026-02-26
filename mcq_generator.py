@@ -212,49 +212,99 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
         """Filter questions by a specific tag"""
         return self.tagger.filter_questions_by_tag(questions, tag)
 
-    def auto_tag_category(self, question_text: str) -> str:
+    # Fixed tag taxonomy — LLM must pick exactly one
+    ALLOWED_TAGS = [
+        "Science",           # Biology, Chemistry, Physics, Astronomy, Earth Science
+        "Geography",         # Countries, Capitals, Landmarks, Physical Features
+        "History",           # Events, Leaders, Wars, Timelines
+        "Technology",        # Computing, AI, Programming, Digital Terms
+        "Mathematics",       # Arithmetic, Algebra, Geometry, Logic
+        "Literature",        # Authors, Books, Poetry, Drama
+        "Arts & Culture",    # Music, Painting, Film, Traditions
+        "Sports & Games",    # Rules, Events, Athletes, Records
+        "General Knowledge", # Mixed/ambiguous questions (fallback)
+    ]
+
+    def auto_tag_category(self, question_text: str, correct_answer_text: str = "") -> str:
         """
-        Ask Groq for 1-2 short topic tags based on the question's intent.
-        e.g. 'binary search', 'sql', 'neural network', 'html forms'
+        Ask Groq to classify the question into exactly ONE tag from ALLOWED_TAGS.
+        Uses question text + correct answer text only.
+        Returns the matched tag string (always non-empty — falls back to 'General Knowledge').
         """
+        tag_list = "\n".join(f"- {t}" for t in self.ALLOWED_TAGS)
+        answer_part = f"\nCorrect Answer: {correct_answer_text}" if correct_answer_text else ""
+
         prompt = (
-            "Read this exam question and give 1 to 2 short topic tags that describe "
-            "what concept it is testing.\n"
+            "You are an exam question classifier.\n"
+            "Read the question and its correct answer, then pick EXACTLY ONE category "
+            "from the list below that best describes what this question is testing.\n\n"
+            "Allowed categories (pick only from this list, exact spelling):\n"
+            f"{tag_list}\n\n"
             "Rules:\n"
-            "- Reply with ONLY the tag(s), separated by a comma if two tags.\n"
-            "- Use lowercase, no punctuation, no explanation.\n"
-            "- Be specific to the concept (e.g. 'binary search', 'sql select', "
-            "'gradient descent', 'html forms', 'overfitting').\n\n"
-            f"Question: {question_text}\n\nTags:"
+            "- Reply with ONLY the category name, nothing else.\n"
+            "- Use the exact spelling from the list above.\n"
+            "- If the question does not fit any specific category, reply: General Knowledge\n\n"
+            f"Question: {question_text}"
+            f"{answer_part}\n\nCategory:"
         )
         try:
             response = self._make_api_call_with_retry(prompt)
-            # Take only first line, clean up
-            line = response.strip().split('\n')[0]
-            line = line.strip('"\'.,:;').lower()
-            # Keep at most 2 comma-separated tags
-            parts = [t.strip() for t in line.split(',') if t.strip()][:2]
-            return ', '.join(parts) if parts else "general"
+            line = response.strip().split('\n')[0].strip().strip('"\'.,;')
+
+            # Match against allowed tags (case-insensitive)
+            for tag in self.ALLOWED_TAGS:
+                if tag.lower() == line.lower():
+                    return tag
+
+            # Partial match fallback
+            for tag in self.ALLOWED_TAGS:
+                if tag.lower() in line.lower() or line.lower() in tag.lower():
+                    return tag
+
+            return "General Knowledge"  # ultimate fallback
         except Exception:
-            return "general"
+            return "General Knowledge"
 
-    def auto_tag_questions(self, questions: list) -> list:
-        """
-        For each question that has no tags, call auto_tag_category and assign it.
-        Returns the same list with tags filled in.
-        """
-        untagged = [q for q in questions if not q.get('tags')]
-        if not untagged:
-            return questions
 
-        print(f"🏷️  Auto-tagging {len(untagged)} question(s) via Groq...")
-        for i, q in enumerate(untagged, 1):
-            category = self.auto_tag_category(q.get('question', ''))
-            q['tags']     = [category]
-            q['category'] = category
-            print(f"   [{i}/{len(untagged)}] → {category}")
+    def llm_tag_questions(self, questions: list) -> list:
+        """
+        Tag every question using the Groq LLM (question text + correct answer only).
+        Only the 'tags' field is added/updated on each question.
+          - LLM confident  → tags = ["topic1", "topic2"]
+          - LLM unsure     → tags = []  (user fills in via option 8)
+        """
+        print(f"\n🤖 LLM tagging {len(questions)} question(s) via Groq...")
+
+        for i, q in enumerate(questions, 1):
+            q_text  = q.get('question', '')
+            options = q.get('options', {})
+            ans_key = q.get('correct_answer', '')
+            if isinstance(options, dict):
+                ans_text = next(
+                    (v for k, v in options.items()
+                     if str(k).strip().upper() == str(ans_key).strip().upper()),
+                    str(ans_key)
+                )
+            else:
+                ans_text = str(ans_key)
+
+            tag_str = self.auto_tag_category(q_text, ans_text)
+
+            if tag_str:
+                q['tags'] = [t.strip() for t in tag_str.split(',') if t.strip()]
+                status    = f"✅ → {tag_str}"
+            else:
+                q['tags'] = []          # empty = needs manual input
+                status    = "⚠️  unsure — needs manual input"
+
+            print(f"   [{i}/{len(questions)}] {status}")
 
         return questions
+
+    def auto_tag_questions(self, questions: list) -> list:
+        """Backward-compat wrapper → delegates to llm_tag_questions."""
+        return self.llm_tag_questions(questions)
+
 
     def filter_questions_by_difficulty(
         self,
