@@ -1,0 +1,704 @@
+{
+  "mcqs": [
+    {
+      "question": "भारत की राजधानी कौन सी है?",
+      "options": {
+        "A": "मुंबई",
+        "B": "कोलकाता",
+        "C": "नई दिल्ली",
+        "D": "चेन्नई"
+      },
+      "correct_answer": "नई दिल्ली",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "सूर्य किस दिशा में उगता है?",
+      "options": {
+        "A": "पश्चिम",
+        "B": "उत्तर",
+        "C": "दक्षिण",
+        "D": "पूर्व"
+      },
+      "correct_answer": "पूर्व",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय पशु कौन सा है?",
+      "options": {
+        "A": "शेर",
+        "B": "हाथी",
+        "C": "बाघ",
+        "D": "गाय"
+      },
+      "correct_answer": "बाघ",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "पानी का रासायनिक सूत्र क्या है?",
+      "options": {
+        "A": "CO2",
+        "B": "H2O",
+        "C": "O2",
+        "D": "NaCl"
+      },
+      "correct_answer": "H2O",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "विश्व का सबसे बड़ा महाद्वीप कौन सा है?",
+      "options": {
+        "A": "अफ्रीका",
+        "B": "यूरोप",
+        "C": "एशिया",
+        "D": "उत्तरी अमेरिका"
+      },
+      "correct_answer": "एशिया",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "भारत के पहले प्रधानमंत्री कौन थे?",
+      "options": {
+        "A": "महात्मा गांधी",
+        "B": "सरदार पटेल",
+        "C": "जवाहरलाल नेहरू",
+        "D": "राजेंद्र प्रसाद"
+      },
+      "correct_answer": "जवाहरलाल नेहरू",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "सौरमंडल का सबसे बड़ा ग्रह कौन सा है?",
+      "options": {
+        "A": "पृथ्वी",
+        "B": "मंगल",
+        "C": "बृहस्पति",
+        "D": "शनि"
+      },
+      "correct_answer": "बृहस्पति",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय गीत कौन सा है?",
+      "options": {
+        "A": "जन गण मन",
+        "B": "वंदे मातरम्",
+        "C": "सारे जहां से अच्छा",
+        "D": "मेरा भारत महान"
+      },
+      "correct_answer": "वंदे मातरम्",
+      "explanation": "",
+      "tags": [
+        "Arts & Culture"
+      ]
+    },
+    {
+      "question": "मानव शरीर में कितनी हड्डियां होती हैं?",
+      "options": {
+        "A": "186",
+        "B": "206",
+        "C": "226",
+        "D": "246"
+      },
+      "correct_answer": "206",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "ताजमहल किस शहर में स्थित है?",
+      "options": {
+        "A": "दिल्ली",
+        "B": "जयपुर",
+        "C": "आगरा",
+        "D": "लखनऊ"
+      },
+      "correct_answer": "आगरा",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय फल कौन सा है?",
+      "options": {
+        "A": "सेब",
+        "B": "केला",
+        "C": "आम",
+        "D": "संतरा"
+      },
+      "correct_answer": "आम",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "पृथ्वी से सूर्य की दूरी कितनी है?",
+      "options": {
+        "A": "10 करोड़ किमी",
+        "B": "15 करोड़ किमी",
+        "C": "20 करोड़ किमी",
+        "D": "25 करोड़ किमी"
+      },
+      "correct_answer": "15 करोड़ किमी",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे लंबा नदी कौन सी है?",
+      "options": {
+        "A": "यमुना",
+        "B": "गोदावरी",
+        "C": "गंगा",
+        "D": "ब्रह्मपुत्र"
+      },
+      "correct_answer": "गंगा",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "स्वतंत्रता दिवस कब मनाया जाता है?",
+      "options": {
+        "A": "15 अगस्त",
+        "B": "26 जनवरी",
+        "C": "2 अक्टूबर",
+        "D": "14 नवंबर"
+      },
+      "correct_answer": "15 अगस्त",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "कंप्यूटर का दिमाग किसे कहते हैं?",
+      "options": {
+        "A": "RAM",
+        "B": "Hard Disk",
+        "C": "CPU",
+        "D": "Monitor"
+      },
+      "correct_answer": "CPU",
+      "explanation": "",
+      "tags": [
+        "Technology"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय पक्षी कौन सा है?",
+      "options": {
+        "A": "कबूतर",
+        "B": "मोर",
+        "C": "तोता",
+        "D": "चील"
+      },
+      "correct_answer": "मोर",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "सौरमंडल में पृथ्वी का स्थान कौन सा है?",
+      "options": {
+        "A": "पहला",
+        "B": "दूसरा",
+        "C": "तीसरा",
+        "D": "चौथा"
+      },
+      "correct_answer": "तीसरा",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे छोटा राज्य कौन सा है?",
+      "options": {
+        "A": "गोवा",
+        "B": "सिक्किम",
+        "C": "त्रिपुरा",
+        "D": "मणिपुर"
+      },
+      "correct_answer": "गोवा",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "मानव शरीर का सबसे बड़ा अंग कौन सा है?",
+      "options": {
+        "A": "हृदय",
+        "B": "फेफड़ा",
+        "C": "त्वचा",
+        "D": "यकृत"
+      },
+      "correct_answer": "त्वचा",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय खेल क्या है?",
+      "options": {
+        "A": "क्रिकेट",
+        "B": "फुटबॉल",
+        "C": "हॉकी",
+        "D": "बैडमिंटन"
+      },
+      "correct_answer": "हॉकी",
+      "explanation": "",
+      "tags": [
+        "Sports & Games"
+      ]
+    },
+    {
+      "question": "प्रकाश की गति कितनी होती है?",
+      "options": {
+        "A": "3 लाख किमी/सेकंड",
+        "B": "2 लाख किमी/सेकंड",
+        "C": "4 लाख किमी/सेकंड",
+        "D": "1 लाख किमी/सेकंड"
+      },
+      "correct_answer": "3 लाख किमी/सेकंड",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे ऊंचा पर्वत शिखर कौन सा है?",
+      "options": {
+        "A": "K2",
+        "B": "कंचनजंघा",
+        "C": "नंदा देवी",
+        "D": "माउंट एवरेस्ट"
+      },
+      "correct_answer": "K2",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "2 + 2 × 2 का मान क्या है?",
+      "options": {
+        "A": "6",
+        "B": "8",
+        "C": "4",
+        "D": "10"
+      },
+      "correct_answer": "6",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "भारत की मुद्रा क्या है?",
+      "options": {
+        "A": "डॉलर",
+        "B": "यूरो",
+        "C": "रुपया",
+        "D": "पाउंड"
+      },
+      "correct_answer": "रुपया",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "सौरमंडल का सबसे गर्म ग्रह कौन सा है?",
+      "options": {
+        "A": "बुध",
+        "B": "शुक्र",
+        "C": "पृथ्वी",
+        "D": "मंगल"
+      },
+      "correct_answer": "शुक्र",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय गान कौन सा है?",
+      "options": {
+        "A": "वंदे मातरम्",
+        "B": "जन गण मन",
+        "C": "सारे जहां से अच्छा",
+        "D": "मेरा भारत महान"
+      },
+      "correct_answer": "जन गण मन",
+      "explanation": "",
+      "tags": [
+        "Arts & Culture"
+      ]
+    },
+    {
+      "question": "मानव शरीर में कितने दांत होते हैं?",
+      "options": {
+        "A": "28",
+        "B": "30",
+        "C": "32",
+        "D": "34"
+      },
+      "correct_answer": "32",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा राज्य कौन सा है?",
+      "options": {
+        "A": "मध्य प्रदेश",
+        "B": "महाराष्ट्र",
+        "C": "उत्तर प्रदेश",
+        "D": "राजस्थान"
+      },
+      "correct_answer": "राजस्थान",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "पानी का क्वथनांक कितना होता है?",
+      "options": {
+        "A": "90°C",
+        "B": "95°C",
+        "C": "100°C",
+        "D": "105°C"
+      },
+      "correct_answer": "100°C",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का पहला राष्ट्रपति कौन था?",
+      "options": {
+        "A": "जवाहरलाल नेहरू",
+        "B": "राजेंद्र प्रसाद",
+        "C": "सरदार पटेल",
+        "D": "महात्मा गांधी"
+      },
+      "correct_answer": "राजेंद्र प्रसाद",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "सौरमंडल में कुल कितने ग्रह हैं?",
+      "options": {
+        "A": "7",
+        "B": "8",
+        "C": "9",
+        "D": "10"
+      },
+      "correct_answer": "8",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय पेड़ कौन सा है?",
+      "options": {
+        "A": "आम",
+        "B": "पीपल",
+        "C": "बरगद",
+        "D": "नीम"
+      },
+      "correct_answer": "बरगद",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "एक वर्ष में कितने दिन होते हैं?",
+      "options": {
+        "A": "360",
+        "B": "365",
+        "C": "366",
+        "D": "364"
+      },
+      "correct_answer": "365",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा बांध कौन सा है?",
+      "options": {
+        "A": "भाखड़ा नांगल",
+        "B": "तेहरी",
+        "C": "सरदार सरोवर",
+        "D": "हीराकुंड"
+      },
+      "correct_answer": "भाखड़ा नांगल",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "मानव शरीर में कौन सा अंग रक्त को शुद्ध करता है?",
+      "options": {
+        "A": "हृदय",
+        "B": "फेफड़ा",
+        "C": "किडनी",
+        "D": "यकृत"
+      },
+      "correct_answer": "किडनी",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे लंबा पुल कौन सा है?",
+      "options": {
+        "A": "बांद्रा-वर्ली सी लिंक",
+        "B": "भूपेन हजारिका सेतु",
+        "C": "हावड़ा ब्रिज",
+        "D": "गोल्डन ब्रिज"
+      },
+      "correct_answer": "भूपेन हजारिका सेतु",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "π (पाई) का मान क्या है?",
+      "options": {
+        "A": "3.12",
+        "B": "3.14",
+        "C": "3.16",
+        "D": "3.18"
+      },
+      "correct_answer": "3.14",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय फूल कौन सा है?",
+      "options": {
+        "A": "गुलाब",
+        "B": "कमल",
+        "C": "सूरजमुखी",
+        "D": "चमेली"
+      },
+      "correct_answer": "कमल",
+      "explanation": "",
+      "tags": [
+        "General Knowledge"
+      ]
+    },
+    {
+      "question": "सौरमंडल का सबसे छोटा ग्रह कौन सा है?",
+      "options": {
+        "A": "मंगल",
+        "B": "बुध",
+        "C": "शुक्र",
+        "D": "पृथ्वी"
+      },
+      "correct_answer": "बुध",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत में कुल कितने राज्य हैं?",
+      "options": {
+        "A": "26",
+        "B": "27",
+        "C": "28",
+        "D": "29"
+      },
+      "correct_answer": "28",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "मानव शरीर का सामान्य तापमान कितना होता है?",
+      "options": {
+        "A": "35°C",
+        "B": "36°C",
+        "C": "37°C",
+        "D": "38°C"
+      },
+      "correct_answer": "37°C",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा शहर कौन सा है?",
+      "options": {
+        "A": "दिल्ली",
+        "B": "मुंबई",
+        "C": "कोलकाता",
+        "D": "चेन्नई"
+      },
+      "correct_answer": "मुंबई",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "1 किलोग्राम में कितने ग्राम होते हैं?",
+      "options": {
+        "A": "100",
+        "B": "500",
+        "C": "1000",
+        "D": "1500"
+      },
+      "correct_answer": "1000",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का राष्ट्रीय गण कौन सा है?",
+      "options": {
+        "A": "गंगा",
+        "B": "यमुना",
+        "C": "गोदावरी",
+        "D": "कृष्णा"
+      },
+      "correct_answer": "गंगा",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "सौरमंडल में किस ग्रह को लाल ग्रह कहते हैं?",
+      "options": {
+        "A": "शुक्र",
+        "B": "मंगल",
+        "C": "बृहस्पति",
+        "D": "शनि"
+      },
+      "correct_answer": "मंगल",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा चिड़ियाघर कहां है?",
+      "options": {
+        "A": "दिल्ली",
+        "B": "मुंबई",
+        "C": "कोलकाता",
+        "D": "चेन्नई"
+      },
+      "correct_answer": "कोलकाता",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "मानव शरीर में कितनी पसलियां होती हैं?",
+      "options": {
+        "A": "10 जोड़ी",
+        "B": "11 जोड़ी",
+        "C": "12 जोड़ी",
+        "D": "13 जोड़ी"
+      },
+      "correct_answer": "12 जोड़ी",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा समुद्री बंदरगाह कौन सा है?",
+      "options": {
+        "A": "मुंबई",
+        "B": "चेन्नई",
+        "C": "कोच्चि",
+        "D": "विशाखापट्टनम"
+      },
+      "correct_answer": "मुंबई",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "एक घंटे में कितने सेकंड होते हैं?",
+      "options": {
+        "A": "3000",
+        "B": "3200",
+        "C": "3400",
+        "D": "3600"
+      },
+      "correct_answer": "3600",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "भारत का सबसे बड़ा रेगिस्तान कौन सा है?",
+      "options": {
+        "A": "थार",
+        "B": "गोबी",
+        "C": "सहारा",
+        "D": "कालाहारी"
+      },
+      "correct_answer": "थार",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    }
+  ]
+}
