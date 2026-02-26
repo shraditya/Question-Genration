@@ -1,0 +1,718 @@
+{
+  "mcqs": [
+    {
+      "question": "What is the capital of Australia?",
+      "options": {
+        "A": "Sydney",
+        "B": "Melbourne",
+        "C": "Canberra",
+        "D": "Brisbane"
+      },
+      "correct_answer": "Canberra",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "options": {
+        "A": "Venus",
+        "B": "Mars",
+        "C": "Jupiter",
+        "D": "Saturn"
+      },
+      "correct_answer": "Mars",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Who wrote 'Romeo and Juliet'?",
+      "options": {
+        "A": "Charles Dickens",
+        "B": "Mark Twain",
+        "C": "William Shakespeare",
+        "D": "Jane Austen"
+      },
+      "correct_answer": "William Shakespeare",
+      "explanation": "",
+      "tags": [
+        "Literature"
+      ]
+    },
+    {
+      "question": "What is the chemical symbol for gold?",
+      "options": {
+        "A": "Go",
+        "B": "Gd",
+        "C": "Au",
+        "D": "Ag"
+      },
+      "correct_answer": "Au",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which ocean is the largest in the world?",
+      "options": {
+        "A": "Atlantic Ocean",
+        "B": "Indian Ocean",
+        "C": "Arctic Ocean",
+        "D": "Pacific Ocean"
+      },
+      "correct_answer": "Pacific Ocean",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "What is the smallest prime number?",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "2",
+        "D": "3"
+      },
+      "correct_answer": "2",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "Who painted the Mona Lisa?",
+      "options": {
+        "A": "Vincent van Gogh",
+        "B": "Pablo Picasso",
+        "C": "Leonardo da Vinci",
+        "D": "Michelangelo"
+      },
+      "correct_answer": "Leonardo da Vinci",
+      "explanation": "",
+      "tags": [
+        "Arts & Culture"
+      ]
+    },
+    {
+      "question": "What is the hardest natural substance on Earth?",
+      "options": {
+        "A": "Gold",
+        "B": "Iron",
+        "C": "Diamond",
+        "D": "Platinum"
+      },
+      "correct_answer": "Diamond",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which country is known as the Land of the Rising Sun?",
+      "options": {
+        "A": "China",
+        "B": "Thailand",
+        "C": "South Korea",
+        "D": "Japan"
+      },
+      "correct_answer": "Japan",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "What is the main gas found in the Earth's atmosphere?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Carbon Dioxide",
+        "C": "Nitrogen",
+        "D": "Hydrogen"
+      },
+      "correct_answer": "Nitrogen",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Who developed the theory of relativity?",
+      "options": {
+        "A": "Isaac Newton",
+        "B": "Nikola Tesla",
+        "C": "Albert Einstein",
+        "D": "Stephen Hawking"
+      },
+      "correct_answer": "Albert Einstein",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the largest mammal in the world?",
+      "options": {
+        "A": "African Elephant",
+        "B": "Blue Whale",
+        "C": "Giraffe",
+        "D": "Polar Bear"
+      },
+      "correct_answer": "Blue Whale",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which element has the atomic number 1?",
+      "options": {
+        "A": "Helium",
+        "B": "Oxygen",
+        "C": "Carbon",
+        "D": "Hydrogen"
+      },
+      "correct_answer": "Hydrogen",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "In which year did World War II end?",
+      "options": {
+        "A": "1943",
+        "B": "1944",
+        "C": "1945",
+        "D": "1946"
+      },
+      "correct_answer": "1945",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "What is the currency of the United Kingdom?",
+      "options": {
+        "A": "Euro",
+        "B": "Dollar",
+        "C": "Pound Sterling",
+        "D": "Franc"
+      },
+      "correct_answer": "Pound Sterling",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which programming language is known as the 'mother of all languages'?",
+      "options": {
+        "A": "Python",
+        "B": "Java",
+        "C": "C",
+        "D": "Assembly"
+      },
+      "correct_answer": "C",
+      "explanation": "",
+      "tags": [
+        "Technology"
+      ]
+    },
+    {
+      "question": "What is the boiling point of water at sea level in Celsius?",
+      "options": {
+        "A": "90°C",
+        "B": "95°C",
+        "C": "100°C",
+        "D": "105°C"
+      },
+      "correct_answer": "100°C",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Who was the first person to walk on the moon?",
+      "options": {
+        "A": "Buzz Aldrin",
+        "B": "Yuri Gagarin",
+        "C": "Neil Armstrong",
+        "D": "Michael Collins"
+      },
+      "correct_answer": "Neil Armstrong",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "Which organ in the human body produces insulin?",
+      "options": {
+        "A": "Liver",
+        "B": "Kidney",
+        "C": "Pancreas",
+        "D": "Heart"
+      },
+      "correct_answer": "Pancreas",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the largest continent by land area?",
+      "options": {
+        "A": "Africa",
+        "B": "North America",
+        "C": "Europe",
+        "D": "Asia"
+      },
+      "correct_answer": "Asia",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which sport is associated with Wimbledon?",
+      "options": {
+        "A": "Cricket",
+        "B": "Football",
+        "C": "Golf",
+        "D": "Tennis"
+      },
+      "correct_answer": "Tennis",
+      "explanation": "",
+      "tags": [
+        "Sports & Games"
+      ]
+    },
+    {
+      "question": "What does 'HTTP' stand for?",
+      "options": {
+        "A": "Hyper Text Transfer Protocol",
+        "B": "High Transfer Text Protocol",
+        "C": "Hyperlink Text Transfer Process",
+        "D": "Home Tool Transfer Protocol"
+      },
+      "correct_answer": "Hyper Text Transfer Protocol",
+      "explanation": "",
+      "tags": [
+        "Technology"
+      ]
+    },
+    {
+      "question": "Who is known as the father of computers?",
+      "options": {
+        "A": "Alan Turing",
+        "B": "Charles Babbage",
+        "C": "Bill Gates",
+        "D": "Steve Jobs"
+      },
+      "correct_answer": "Charles Babbage",
+      "explanation": "",
+      "tags": [
+        "Technology"
+      ]
+    },
+    {
+      "question": "What is the square root of 144?",
+      "options": {
+        "A": "10",
+        "B": "11",
+        "C": "12",
+        "D": "13"
+      },
+      "correct_answer": "12",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "Which gas do plants absorb from the atmosphere during photosynthesis?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Nitrogen",
+        "C": "Carbon Dioxide",
+        "D": "Hydrogen"
+      },
+      "correct_answer": "Carbon Dioxide",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the longest river in the world?",
+      "options": {
+        "A": "Amazon River",
+        "B": "Nile River",
+        "C": "Yangtze River",
+        "D": "Mississippi River"
+      },
+      "correct_answer": "Nile River",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Who wrote '1984'?",
+      "options": {
+        "A": "Aldous Huxley",
+        "B": "George Orwell",
+        "C": "Ray Bradbury",
+        "D": "H.G. Wells"
+      },
+      "correct_answer": "George Orwell",
+      "explanation": "",
+      "tags": [
+        "Literature"
+      ]
+    },
+    {
+      "question": "What is the speed of light in vacuum (approximately)?",
+      "options": {
+        "A": "300,000 km/s",
+        "B": "150,000 km/s",
+        "C": "450,000 km/s",
+        "D": "200,000 km/s"
+      },
+      "correct_answer": "300,000 km/s",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which country hosted the 2016 Summer Olympics?",
+      "options": {
+        "A": "China",
+        "B": "United Kingdom",
+        "C": "Brazil",
+        "D": "Russia"
+      },
+      "correct_answer": "Brazil",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "What is the main component of the Sun?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Carbon",
+        "C": "Helium",
+        "D": "Hydrogen"
+      },
+      "correct_answer": "Hydrogen",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which vitamin is produced when skin is exposed to sunlight?",
+      "options": {
+        "A": "Vitamin A",
+        "B": "Vitamin B12",
+        "C": "Vitamin C",
+        "D": "Vitamin D"
+      },
+      "correct_answer": "Vitamin D",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the capital of Canada?",
+      "options": {
+        "A": "Toronto",
+        "B": "Vancouver",
+        "C": "Montreal",
+        "D": "Ottawa"
+      },
+      "correct_answer": "Ottawa",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which metal is liquid at room temperature?",
+      "options": {
+        "A": "Iron",
+        "B": "Gold",
+        "C": "Mercury",
+        "D": "Silver"
+      },
+      "correct_answer": "Mercury",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "How many bones are in the adult human body?",
+      "options": {
+        "A": "186",
+        "B": "206",
+        "C": "226",
+        "D": "246"
+      },
+      "correct_answer": "206",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the largest desert in the world?",
+      "options": {
+        "A": "Sahara Desert",
+        "B": "Arabian Desert",
+        "C": "Gobi Desert",
+        "D": "Antarctic Desert"
+      },
+      "correct_answer": "Antarctic Desert",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Who invented the telephone?",
+      "options": {
+        "A": "Thomas Edison",
+        "B": "Nikola Tesla",
+        "C": "Alexander Graham Bell",
+        "D": "Guglielmo Marconi"
+      },
+      "correct_answer": "Alexander Graham Bell",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "What is the value of Pi (π) to two decimal places?",
+      "options": {
+        "A": "3.12",
+        "B": "3.14",
+        "C": "3.16",
+        "D": "3.18"
+      },
+      "correct_answer": "3.14",
+      "explanation": "",
+      "tags": [
+        "Mathematics"
+      ]
+    },
+    {
+      "question": "Which country is famous for the Eiffel Tower?",
+      "options": {
+        "A": "Italy",
+        "B": "Spain",
+        "C": "Germany",
+        "D": "France"
+      },
+      "correct_answer": "France",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "What is the smallest country in the world by area?",
+      "options": {
+        "A": "Monaco",
+        "B": "San Marino",
+        "C": "Vatican City",
+        "D": "Liechtenstein"
+      },
+      "correct_answer": "Vatican City",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which blood type is known as the universal donor?",
+      "options": {
+        "A": "A+",
+        "B": "B+",
+        "C": "AB+",
+        "D": "O-"
+      },
+      "correct_answer": "O-",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What does 'AI' stand for in technology?",
+      "options": {
+        "A": "Automated Intelligence",
+        "B": "Artificial Intelligence",
+        "C": "Advanced Integration",
+        "D": "Algorithmic Interface"
+      },
+      "correct_answer": "Artificial Intelligence",
+      "explanation": "",
+      "tags": [
+        "Technology"
+      ]
+    },
+    {
+      "question": "Which planet has the most moons?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Saturn",
+        "C": "Uranus",
+        "D": "Neptune"
+      },
+      "correct_answer": "Saturn",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Who was the first President of the United States?",
+      "options": {
+        "A": "Thomas Jefferson",
+        "B": "John Adams",
+        "C": "George Washington",
+        "D": "Benjamin Franklin"
+      },
+      "correct_answer": "George Washington",
+      "explanation": "",
+      "tags": [
+        "History"
+      ]
+    },
+    {
+      "question": "What is the freezing point of water in Fahrenheit?",
+      "options": {
+        "A": "0°F",
+        "B": "16°F",
+        "C": "32°F",
+        "D": "48°F"
+      },
+      "correct_answer": "32°F",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "Which instrument measures atmospheric pressure?",
+      "options": {
+        "A": "Thermometer",
+        "B": "Barometer",
+        "C": "Hygrometer",
+        "D": "Anemometer"
+      },
+      "correct_answer": "Barometer",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the largest island in the world?",
+      "options": {
+        "A": "Madagascar",
+        "B": "Greenland",
+        "C": "New Guinea",
+        "D": "Borneo"
+      },
+      "correct_answer": "Greenland",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which famous scientist developed the laws of motion?",
+      "options": {
+        "A": "Albert Einstein",
+        "B": "Isaac Newton",
+        "C": "Galileo Galilei",
+        "D": "Niels Bohr"
+      },
+      "correct_answer": "Isaac Newton",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the primary language spoken in Brazil?",
+      "options": {
+        "A": "Spanish",
+        "B": "Portuguese",
+        "C": "French",
+        "D": "English"
+      },
+      "correct_answer": "Portuguese",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "Which part of the plant conducts photosynthesis?",
+      "options": {
+        "A": "Root",
+        "B": "Stem",
+        "C": "Leaf",
+        "D": "Flower"
+      },
+      "correct_answer": "Leaf",
+      "explanation": "",
+      "tags": [
+        "Science"
+      ]
+    },
+    {
+      "question": "What is the national animal of India?",
+      "options": {
+        "A": "Lion",
+        "B": "Elephant",
+        "C": "Tiger",
+        "D": "Peacock"
+      },
+      "correct_answer": "Tiger",
+      "explanation": "",
+      "tags": [
+        "Geography"
+      ]
+    },
+    {
+      "question": "How many players are on a standard soccer team on the field?",
+      "options": {
+        "A": "9",
+        "B": "10",
+        "C": "11",
+        "D": "12"
+      },
+      "correct_answer": "11",
+      "explanation": "",
+      "tags": [
+        "Sports & Games"
+      ]
+    }
+  ]
+}
