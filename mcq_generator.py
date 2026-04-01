@@ -62,9 +62,8 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
                         }
                     ],
                     temperature=1,
-                    max_completion_tokens=8192,
+                    max_completion_tokens=1500,
                     top_p=1,
-                    reasoning_effort="medium",
                     stream=True,
                     stop=None
                 )
@@ -212,17 +211,27 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
         """Filter questions by a specific tag"""
         return self.tagger.filter_questions_by_tag(questions, tag)
 
-    # Fixed tag taxonomy — LLM must pick exactly one
+    # Comprehensive main category taxonomy
     ALLOWED_TAGS = [
-        "Science",           # Biology, Chemistry, Physics, Astronomy, Earth Science
-        "Geography",         # Countries, Capitals, Landmarks, Physical Features
-        "History",           # Events, Leaders, Wars, Timelines
-        "Technology",        # Computing, AI, Programming, Digital Terms
-        "Mathematics",       # Arithmetic, Algebra, Geometry, Logic
-        "Literature",        # Authors, Books, Poetry, Drama
-        "Arts & Culture",    # Music, Painting, Film, Traditions
-        "Sports & Games",    # Rules, Events, Athletes, Records
-        "General Knowledge", # Mixed/ambiguous questions (fallback)
+        "Science",
+        "Mathematics",
+        "Statistics & Data Science",
+        "Computer Science",
+        "Engineering",
+        "Technology",
+        "Medical & Health Sciences",
+        "Social Sciences",
+        "Economics",
+        "Political Science",
+        "Law",
+        "Business & Management",
+        "History",
+        "Geography",
+        "Literature",
+        "Arts & Culture",
+        "Sports & Games",
+        "Education",
+        "General Knowledge"
     ]
 
     def auto_tag_category(self, question_text: str, correct_answer_text: str = "") -> str:
@@ -266,128 +275,170 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
             return "General Knowledge"
 
 
-    def _resolve_answer_text(self, q: dict) -> str:
-        """Extract the correct answer text from a question dict."""
-        options = q.get('options', {})
-        ans_key = q.get('correct_answer', '')
-        if isinstance(options, dict):
-            return next(
-                (v for k, v in options.items()
-                 if str(k).strip().upper() == str(ans_key).strip().upper()),
-                str(ans_key)
-            )
-        return str(ans_key)
-
-    def _tag_batch(self, batch: list) -> list:
+    def auto_tag_hierarchical(self, question_text: str, correct_answer_text: str = "") -> dict:
         """
-        Send a batch of questions to Groq in ONE API call.
-        Returns a list of tag strings (same length as batch).
-        Each tag is guaranteed to be one of ALLOWED_TAGS.
+        Ask Groq to classify the question with context-based hierarchical tags.
+
+        Returns: {"main_tag": "Computer Science", "sub_tags": ["DNN", "ML", "NLP"]}
+
+        Sub-tags are generated based on the specific question context, not a fixed taxonomy.
+        Example: "What is deep learning?" → Main: "Computer Science", Subs: ["DNN", "ML", "Deep Learning"]
         """
-        tag_list = "\n".join(f"- {t}" for t in self.ALLOWED_TAGS)
+        answer_part = f" (Answer: {correct_answer_text[:50]})" if correct_answer_text else ""
 
-        # Build the numbered question list
-        lines = []
-        for idx, q in enumerate(batch, 1):
-            q_text   = q.get('question', '')
-            ans_text = self._resolve_answer_text(q)
-            lines.append(f"{idx}. Q: {q_text}\n   Answer: {ans_text}")
-        questions_block = "\n\n".join(lines)
-
+        # Clearer prompt with valid JSON example
         prompt = (
-            "You are an exam question classifier.\n"
-            "Classify each question below into EXACTLY ONE category from this list:\n\n"
-            f"{tag_list}\n\n"
-            "Rules:\n"
-            "- Return ONLY a valid JSON array with one tag per question, in order.\n"
-            "- Each tag must be copied exactly from the list above.\n"
-            "- Use \"General Knowledge\" if unsure.\n"
-            "- No explanations, no extra text — ONLY the JSON array.\n\n"
-            "Example output for 3 questions:\n"
-            "[\"Science\", \"Geography\", \"History\"]\n\n"
-            f"Questions:\n{questions_block}\n\n"
-            "JSON array of tags:"
+            f"Classify this question:\n"
+            f"1. Pick 1 main category from: {', '.join(self.ALLOWED_TAGS[:10])}, etc\n"
+            f"2. Generate 3-4 specific sub-topics based on the question's context\n\n"
+            f"Question: {question_text[:120]}{answer_part}\n\n"
+            f"Reply ONLY with valid JSON:\n"
+            f'{{\"main_tag\": \"Category Name\", \"sub_tags\": [\"Sub1\", \"Sub2\", \"Sub3\"]}}'
         )
 
         try:
             response = self._make_api_call_with_retry(prompt)
+            # Extract JSON
+            start = response.find('{')
+            end = response.rfind('}') + 1
+            if start != -1 and end > start:
+                data = json.loads(response[start:end])
 
-            # Extract JSON array from response
+                # Validate main_tag
+                main_tag = data.get("main_tag", "General Knowledge")
+                if main_tag not in self.ALLOWED_TAGS:
+                    # Try to match
+                    for allowed in self.ALLOWED_TAGS:
+                        if allowed.lower() in main_tag.lower() or main_tag.lower() in allowed.lower():
+                            main_tag = allowed
+                            break
+                    else:
+                        main_tag = "General Knowledge"
+
+                # Get context-based sub_tags (max 4)
+                sub_tags = data.get("sub_tags", [])
+                if not isinstance(sub_tags, list):
+                    sub_tags = [str(sub_tags)]
+
+                # Clean and limit to 3-4 sub-tags
+                sub_tags = [str(s).strip() for s in sub_tags if str(s).strip()][:4]
+
+                if not sub_tags:
+                    sub_tags = ["General"]
+
+                return {"main_tag": main_tag, "sub_tags": sub_tags}
+        except Exception as e:
+            print(f"      Error in hierarchical tagging: {e}")
+
+        return {"main_tag": "General Knowledge", "sub_tags": ["General"]}
+
+    def _tag_batch_hierarchical(self, batch: list) -> list:
+        """
+        Tag a batch of questions in ONE API call for speed.
+        Returns list of {"main_tag": str, "sub_tags": [str]} dicts.
+        """
+        if not batch:
+            return []
+
+        # Build compact question list
+        lines = []
+        for idx, q in enumerate(batch, 1):
+            q_text = q.get('question', '')[:80]
+            ans_key = q.get('correct_answer', '')
+            lines.append(f"{idx}.{q_text} (Ans:{ans_key})")
+
+        questions_text = "\n".join(lines)
+
+        prompt = (
+            f"Tag {len(batch)} questions. For each:\n"
+            f"1. Main category from: {', '.join(self.ALLOWED_TAGS[:12])}, etc\n"
+            f"2. 3-4 context-based sub-tags\n\n"
+            f"{questions_text}\n\n"
+            f"Reply ONLY valid JSON array:\n"
+            f'[{{\"main_tag\":\"X\",\"sub_tags\":[\"A\",\"B\",\"C\"]}}]'
+        )
+
+        try:
+            response = self._make_api_call_with_retry(prompt)
+            # Extract JSON array
             start = response.find('[')
-            end   = response.rfind(']') + 1
+            end = response.rfind(']') + 1
             if start == -1 or end == 0:
-                raise ValueError("No JSON array found in response")
+                raise ValueError("No JSON array in response")
 
-            raw_tags = json.loads(response[start:end])
+            data = json.loads(response[start:end])
+            if not isinstance(data, list):
+                raise ValueError("Response not a list")
 
-            # Validate & map each returned tag to ALLOWED_TAGS
-            validated = []
-            allowed_lower = {t.lower(): t for t in self.ALLOWED_TAGS}
-            for raw in raw_tags:
-                raw_s = str(raw).strip().strip('"\'')
-                # Exact match (case-insensitive)
-                tag = allowed_lower.get(raw_s.lower())
-                if not tag:
-                    # Partial match
-                    tag = next(
-                        (t for t in self.ALLOWED_TAGS
-                         if t.lower() in raw_s.lower() or raw_s.lower() in t.lower()),
-                        "General Knowledge"
-                    )
-                validated.append(tag)
+            # Validate and clean
+            results = []
+            for item in data:
+                main_tag = item.get("main_tag", "General Knowledge")
+                # Validate main_tag
+                if main_tag not in self.ALLOWED_TAGS:
+                    for allowed in self.ALLOWED_TAGS:
+                        if allowed.lower() in main_tag.lower():
+                            main_tag = allowed
+                            break
+                    else:
+                        main_tag = "General Knowledge"
 
-            # Pad/trim to match batch size
-            while len(validated) < len(batch):
-                validated.append("General Knowledge")
-            return validated[:len(batch)]
+                sub_tags = item.get("sub_tags", [])
+                if not isinstance(sub_tags, list):
+                    sub_tags = [str(sub_tags)]
+                sub_tags = [str(s).strip() for s in sub_tags if str(s).strip()][:4]
+
+                if not sub_tags:
+                    sub_tags = ["General"]
+
+                results.append({"main_tag": main_tag, "sub_tags": sub_tags})
+
+            # Pad if needed
+            while len(results) < len(batch):
+                results.append({"main_tag": "General Knowledge", "sub_tags": ["General"]})
+
+            return results[:len(batch)]
 
         except Exception as e:
-            # On any failure, fall back to General Knowledge for the whole batch
-            return ["General Knowledge"] * len(batch)
+            print(f"   ⚠️  Batch error: {str(e)[:50]}")
+            return [{"main_tag": "General Knowledge", "sub_tags": ["General"]}
+                    for _ in range(len(batch))]
 
-    def llm_tag_questions(self, questions: list,
-                          batch_size: int = 50,
-                          max_workers: int = 5) -> list:
+    def llm_tag_questions(self, questions: list, batch_size: int = 10, max_workers: int = 3) -> list:
         """
-        Tag a list of questions using Groq LLM with batching + parallel workers.
-
-        Performance vs sequential:
-          1 q/call  → 5 000 qs ≈ 83 min
-          batch=50  → 5 000 qs ≈  4 min
-          batch=50 + 5 workers → 5 000 qs ≈ < 1 min
+        Fast batch tagging with parallel workers.
 
         Args:
-            questions:   List of question dicts.
-            batch_size:  Questions per API call  (default 50).
-            max_workers: Parallel API calls       (default 5).
+            questions: List of question dicts
+            batch_size: Questions per API call (default 10 for speed/stability balance)
+            max_workers: Parallel workers (default 3 to avoid rate limits)
+
+        Performance: 104 questions ≈ 30-60 seconds (vs 5+ minutes one-by-one)
         """
         from concurrent.futures import ThreadPoolExecutor, as_completed
         import threading
 
-        total   = len(questions)
+        total = len(questions)
         batches = [questions[i:i + batch_size]
                    for i in range(0, total, batch_size)]
 
-        print(f"\n🤖 LLM tagging {total} question(s) | "
-              f"batch={batch_size} | workers={max_workers} | "
-              f"batches={len(batches)}")
+        print(f"\n🤖 Fast batch tagging {total} question(s) | "
+              f"batch={batch_size} | workers={max_workers} | batches={len(batches)}")
 
-        # Thread-safe progress counter
+        # Thread-safe progress
         done_count = [0]
         lock = threading.Lock()
-
-        # results[batch_index] = list of tags for that batch
         results = [None] * len(batches)
 
         def process_batch(args):
             batch_idx, batch = args
-            tags = self._tag_batch(batch)
+            tag_dicts = self._tag_batch_hierarchical(batch)
             with lock:
                 done_count[0] += 1
                 pct = 100 * done_count[0] / len(batches)
-                qs_done = min((done_count[0]) * batch_size, total)
-                print(f"   [{qs_done}/{total}]  {pct:.0f}% complete", flush=True)
-            return batch_idx, tags
+                qs_done = min(done_count[0] * batch_size, total)
+                print(f"   [{qs_done}/{total}]  {pct:.0f}% complete")
+            return batch_idx, tag_dicts
 
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
             futures = {
@@ -395,17 +446,25 @@ Generate the MCQs in the following JSON format (only return valid JSON, no extra
                 for i, b in enumerate(batches)
             }
             for future in as_completed(futures):
-                batch_idx, tags = future.result()
-                results[batch_idx] = tags
+                batch_idx, tag_dicts = future.result()
+                results[batch_idx] = tag_dicts
 
-        # Apply tags back to questions in original order
+        # Apply tags back to questions
         for batch_idx, batch in enumerate(batches):
-            tags_for_batch = results[batch_idx] or ["General Knowledge"] * len(batch)
-            for q, tag in zip(batch, tags_for_batch):
-                q['tags'] = [tag]
+            tags_for_batch = results[batch_idx] or [
+                {"main_tag": "General Knowledge", "sub_tags": ["General"]}
+                for _ in range(len(batch))
+            ]
+            for q, tag_dict in zip(batch, tags_for_batch):
+                main_tag = tag_dict["main_tag"]
+                sub_tags = tag_dict["sub_tags"]
 
-        tagged = sum(1 for q in questions if q.get('tags'))
-        print(f"\n✅ Done — {tagged}/{total} question(s) tagged.")
+                # Only add main_tag and sub_tags (remove redundant fields)
+                q['main_tag'] = main_tag
+                q['sub_tags'] = sub_tags
+
+        tagged = sum(1 for q in questions if q.get('main_tag'))
+        print(f"\n✅ Done — {tagged}/{total} questions tagged.")
         return questions
 
     def auto_tag_questions(self, questions: list) -> list:
