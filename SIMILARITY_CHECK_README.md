@@ -287,6 +287,16 @@ test_id,question1,question2
 - Use case: Duplicate question detection
 - Adapted for MCQ similarity testing
 
+**Note:** The `test.csv` file (455MB) is not included in the repository due to GitHub's file size limit. 
+You can:
+1. Download it from [Quora Question Pairs Dataset on Kaggle](https://www.kaggle.com/c/quora-question-pairs)
+2. Use your own question pairs CSV file
+3. Use the example MCQs in main.py for testing
+
+**Included data files:**
+- `duplicate_pairs.json` - Known duplicate pairs for validation
+- `test_results.json` - Sample similarity check results
+
 ## Input Format
 
 Your MCQ data should be in the following format:
