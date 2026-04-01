@@ -15,15 +15,147 @@ The fine-tuned similarity model has been uploaded to Google Drive for easy acces
 
 ## Files in this Branch
 
+- **`app.py`**: Flask REST API for similarity checking
+- **`main.py`**: Command-line demonstration script with test data
 - **`mcq_similarity_colab.ipynb`**: Jupyter notebook for running similarity checks in Google Colab
 - **`similiarty_data/`**: Contains test data and results
+  - `test.csv`: Test dataset with question pairs (Quora duplicate questions)
   - `duplicate_pairs.json`: Known duplicate MCQ pairs for validation
   - `test_results.json`: Similarity check results
-  - `test.csv`: Test dataset
+
+## Quick Start
+
+### 1. Run the Demo Script (main.py)
+
+The demo script automatically uses the test.csv data:
+
+```bash
+# Install dependencies
+pip install sentence-transformers scikit-learn pandas flask
+
+# Run with default settings (first 50 pairs from test.csv)
+python main.py
+
+# Run with more pairs
+python main.py --test 100
+
+# Run with example MCQs
+python main.py --example
+
+# Use custom CSV file
+python main.py your_data.csv 200
+```
+
+**Output:**
+- Loads question pairs from `similiarty_data/test.csv`
+- Calculates similarity using fine-tuned model
+- Shows duplicate and similar questions
+- Saves results to JSON files
+
+### 2. Run the Flask API (app.py)
+
+```bash
+# Start the API server
+python app.py
+
+# Server runs on http://localhost:5000
+```
+
+**Test the API:**
+
+```bash
+# Health check
+curl http://localhost:5000/health
+
+# Test with test.csv data
+curl "http://localhost:5000/test-data?max_pairs=50&threshold=0.75"
+
+# Check custom questions
+curl -X POST http://localhost:5000/check-similarity \
+  -H "Content-Type: application/json" \
+  -d '{
+    "questions": [
+      {"id": "q1", "question": "What is Python?", "answer": "A programming language"},
+      {"id": "q2", "question": "Define Python", "answer": "A programming language"}
+    ]
+  }'
+```
 
 ## How to Check MCQ Similarity
 
-### Method 1: Using Google Colab (Recommended)
+### Method 1: Using the Demo Script (main.py) - Recommended for Testing
+
+**This is the easiest way to test the similarity checker!**
+
+1. **Install dependencies**
+   ```bash
+   pip install sentence-transformers scikit-learn pandas flask
+   ```
+
+2. **Run the script**
+   ```bash
+   # Uses test.csv data automatically
+   python main.py
+   
+   # Check 100 pairs instead of 50
+   python main.py --test 100
+   
+   # Use example MCQs
+   python main.py --example
+   ```
+
+3. **View results**
+   - Console output shows similar pairs
+   - Results saved to `test_data_similarity_results.json`
+   - Full analysis saved to `all_similarity_results.json`
+
+### Method 2: Using the Flask API (app.py) - For Integration
+
+Perfect for integrating similarity checking into your application:
+
+1. **Start the server**
+   ```bash
+   python app.py
+   ```
+
+2. **Available endpoints**
+   
+   **Health Check:**
+   ```bash
+   curl http://localhost:5000/health
+   ```
+   
+   **Test with built-in data:**
+   ```bash
+   curl "http://localhost:5000/test-data?max_pairs=50"
+   ```
+   
+   **Check custom MCQs:**
+   ```bash
+   curl -X POST http://localhost:5000/check-similarity \
+     -H "Content-Type: application/json" \
+     -d '{
+       "questions": [
+         {"id": "q1", "question": "What is AI?", "answer": "Artificial Intelligence"},
+         {"id": "q2", "question": "Define AI", "answer": "Artificial Intelligence"}
+       ],
+       "threshold": 0.75
+     }'
+   ```
+   
+   **Batch processing:**
+   ```bash
+   curl -X POST http://localhost:5000/batch-check \
+     -H "Content-Type: application/json" \
+     -d '{
+       "mcqs": [
+         {"id": "q1", "question": "What is Python?", "answer": "A language"},
+         {"id": "q2", "question": "Define Python", "answer": "A language"}
+       ]
+     }'
+   ```
+
+### Method 3: Using Google Colab (mcq_similarity_colab.ipynb)
 
 1. **Upload the notebook to Colab**
    - Open [Google Colab](https://colab.research.google.com/)
@@ -48,7 +180,7 @@ The fine-tuned similarity model has been uploaded to Google Drive for easy acces
    - Score 0.70-0.85: Similar questions
    - Score < 0.70: Different questions
 
-### Method 2: Local Setup
+### Method 4: Local Python Integration
 
 1. **Install dependencies**
    ```bash
@@ -74,6 +206,86 @@ The fine-tuned similarity model has been uploaded to Google Drive for easy acces
    from sklearn.metrics.pairwise import cosine_similarity
    similarity_matrix = cosine_similarity(embeddings)
    ```
+
+## Application Architecture
+
+### main.py - Demo & Testing Script
+
+**Purpose:** Command-line tool for testing and demonstrating similarity checking
+
+**Features:**
+- Loads test data from `similiarty_data/test.csv`
+- Processes question pairs and calculates similarity
+- Displays results in readable format
+- Saves results to JSON files
+- Supports custom CSV files
+
+**Usage scenarios:**
+- Testing the model with your data
+- Batch processing question pairs
+- Generating similarity reports
+- Debugging and validation
+
+**Example output:**
+```
+Pair 1: ✓ DUPLICATE (Score: 0.9234)
+─────────────────────────────────────────
+Q1: What is Python?
+A1: A programming language
+
+Q2: Define Python programming language  
+A2: A programming language
+
+Question Similarity: 0.8945
+Answer Similarity:   0.9980
+Final Similarity:    0.9234
+```
+
+### app.py - REST API Server
+
+**Purpose:** Production-ready Flask API for integration
+
+**Features:**
+- RESTful endpoints for similarity checking
+- Health monitoring
+- Batch processing support
+- Test data validation endpoint
+- JSON input/output
+- Error handling and validation
+
+**Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Check API health and model status |
+| GET | `/test-data` | Run test with test.csv data |
+| POST | `/check-similarity` | Check similarity between questions |
+| POST | `/batch-check` | Batch process multiple MCQs |
+| POST | `/encode` | Get embeddings for text |
+
+**Use cases:**
+- Integration with web applications
+- Automated duplicate detection
+- Real-time similarity checking
+- Microservice architecture
+- API-based question validation
+
+## Test Data
+
+The system uses `similiarty_data/test.csv` containing question pairs from the Quora duplicate questions dataset:
+
+**Format:**
+```csv
+test_id,question1,question2
+0,"How does Surface Pro 4 compare with iPad Pro?","Why did Microsoft choose core m3 for Surface Pro 4?"
+1,"Should I have a hair transplant at age 24?","How much does hair transplant cost?"
+```
+
+**Statistics:**
+- Total pairs: 404,290+
+- Format: CSV with question pairs
+- Use case: Duplicate question detection
+- Adapted for MCQ similarity testing
 
 ## Input Format
 
@@ -141,6 +353,83 @@ response = requests.post('http://localhost:8000/check-similarity',
 )
 
 duplicates = response.json()['duplicates']
+```
+
+## API Integration
+
+If you want to integrate similarity checking into your application:
+
+### Python Integration
+
+```python
+import requests
+
+# Check similarity via API
+response = requests.post('http://localhost:5000/check-similarity', 
+    json={
+        'questions': [
+            {'id': 'q1', 'question': 'What is Python?', 'answer': 'A language'},
+            {'id': 'q2', 'question': 'Define Python', 'answer': 'A language'}
+        ]
+    }
+)
+
+duplicates = response.json()['pairs']
+```
+
+### Direct Python Usage
+
+```python
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load model
+model = SentenceTransformer('./mcq_intent_model')
+
+# Encode questions
+questions = ["What is Python?", "Define Python"]
+embeddings = model.encode(questions, normalize_embeddings=True)
+
+# Calculate similarity
+similarity = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
+print(f"Similarity: {similarity:.4f}")
+```
+
+## Command Line Usage
+
+### main.py Options
+
+```bash
+# Default: Use test.csv (first 50 pairs)
+python main.py
+
+# Use test.csv with custom number of pairs
+python main.py --test 100
+
+# Use example MCQs
+python main.py --example
+
+# Use custom CSV file
+python main.py your_questions.csv
+
+# Use custom CSV with limited pairs
+python main.py your_questions.csv 200
+```
+
+### app.py Options
+
+```bash
+# Default port 5000
+python app.py
+
+# Custom port
+PORT=8080 python app.py
+
+# Debug mode
+DEBUG=true python app.py
+
+# Custom model path
+MODEL_PATH=/path/to/model python app.py
 ```
 
 ## Troubleshooting
