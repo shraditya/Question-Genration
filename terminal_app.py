@@ -223,13 +223,21 @@ class TerminalMCQApp:
             print(f"\n📝 Question {i}:")
             print(f"Q: {mcq.get('question', '')}")
 
-            # Display tags
-            tags = mcq.get('tags', [])
+            # Display hierarchical tags
+            main_tag = mcq.get('main_tag')
+            sub_tags = mcq.get('sub_tags', [])
             difficulty = mcq.get('difficulty', 'medium')
-            category = mcq.get('category', 'general')
-            if tags:
-                print(f"🏷️  Tags: {', '.join(tags)}")
-            print(f"📊 Category: {category} | Difficulty: {difficulty}")
+
+            if main_tag:
+                print(f"🎯 Main Category: {main_tag}")
+            if sub_tags:
+                print(f"🏷️  Sub-Tags: {', '.join(sub_tags)}")
+
+            print(f"📊 Difficulty: {difficulty}")
+            
+            intent = mcq.get('intent')
+            if intent:
+                print(f"🧠 Intent: {intent}")
 
             # Options
             options = mcq.get('options', {})
@@ -281,8 +289,9 @@ class TerminalMCQApp:
         print("1. Export to JSON file")
         print("2. Export to CSV file")
         print("3. Display formatted text")
+        print("4. Export to Excel (.xlsx) file")
         
-        choice = input("Enter choice (1-3): ").strip()
+        choice = input("Enter choice (1-4): ").strip()
         
         if choice == "1":
             filename = input("Enter filename (default: mcqs.json): ").strip() or "mcqs.json"
@@ -328,6 +337,35 @@ class TerminalMCQApp:
                 print(f"Correct Answer: {mcq.get('correct_answer', '')}")
                 print(f"Explanation: {mcq.get('explanation', '')}")
                 print("-" * 40)
+                
+        elif choice == "4":
+            filename = input("Enter filename (default: mcqs.xlsx): ").strip() or "mcqs.xlsx"
+            if not filename.endswith('.xlsx'):
+                filename += '.xlsx'
+            try:
+                import pandas as pd
+                rows = []
+                for mcq in self.current_mcqs:
+                    options = mcq.get('options', {})
+                    row = {
+                        'Question': mcq.get('question', ''),
+                        'Option A': options.get('A', ''),
+                        'Option B': options.get('B', ''),
+                        'Option C': options.get('C', ''),
+                        'Option D': options.get('D', ''),
+                        'Correct Answer': mcq.get('correct_answer', ''),
+                        'Explanation': mcq.get('explanation', ''),
+                        'Intent': mcq.get('intent', ''),
+                        'Tags': ', '.join(mcq.get('tags', []))
+                    }
+                    rows.append(row)
+                df = pd.DataFrame(rows)
+                df.to_excel(filename, index=False)
+                print(f"✅ MCQs exported to {filename}")
+            except ImportError:
+                print("❌ pandas or openpyxl missing. Run: conda run -n rag_mcq pip install pandas openpyxl")
+            except Exception as e:
+                print(f"❌ Error exporting to Excel: {e}")
         
         else:
             print("❌ Invalid choice.")

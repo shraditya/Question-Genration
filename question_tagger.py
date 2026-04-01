@@ -19,52 +19,74 @@ class QuestionTagger:
     CONFIDENCE_THRESHOLD = 1.5
 
     def __init__(self):
-        # Topic keywords mapping
-        self.topic_keywords = {
-            "machine_learning": [
-                "machine learning", "ml", "model", "training", "prediction", "algorithm",
-                "supervised", "unsupervised", "classification", "regression", "clustering",
-                "neural network", "deep learning", "feature", "label", "dataset"
-            ],
-            "transformer_architecture": [
-                "transformer", "attention", "encoder", "decoder", "self-attention",
-                "multi-head", "positional encoding", "feed-forward", "layer normalization",
-                "residual connection", "skip connection"
-            ],
-            "natural_language_processing": [
-                "nlp", "natural language", "text", "sentence", "token", "embedding",
-                "word2vec", "bert", "language model", "sequence", "translation",
-                "summarization", "sentiment"
-            ],
-            "computer_vision": [
-                "image", "vision", "cnn", "convolutional", "pixel", "visual",
-                "object detection", "segmentation", "classification", "resnet"
-            ],
-            "data_preprocessing": [
-                "preprocessing", "normalization", "standardization", "cleaning",
-                "feature engineering", "data preparation", "scaling", "encoding"
-            ],
-            "evaluation_metrics": [
-                "accuracy", "precision", "recall", "f1", "loss", "metric", "evaluate",
-                "validation", "test set", "confusion matrix", "roc", "auc"
-            ],
-            "optimization": [
-                "optimizer", "gradient descent", "adam", "sgd", "learning rate",
-                "backpropagation", "convergence", "minimize", "maximize"
-            ],
-            "attention_mechanism": [
-                "attention", "query", "key", "value", "attention weights", "scaled dot-product",
-                "attention score", "context vector"
-            ],
-            "sequence_modeling": [
-                "sequence", "rnn", "lstm", "gru", "recurrent", "time step",
-                "vanishing gradient", "long short-term"
-            ],
-            "training_techniques": [
-                "batch", "epoch", "iteration", "dropout", "regularization", "overfitting",
-                "underfitting", "early stopping", "data augmentation"
-            ]
+        # Hierarchical topic taxonomy: Main Category -> Sub-topics with keywords
+        self.topic_taxonomy = {
+            "Technology": {
+                "Artificial Intelligence": [
+                    "artificial intelligence", "ai", "intelligent systems", "cognitive computing"
+                ],
+                "Machine Learning": [
+                    "machine learning", "ml", "model", "training", "prediction", "algorithm",
+                    "supervised", "unsupervised", "classification", "regression", "clustering",
+                    "feature", "label", "dataset"
+                ],
+                "Deep Learning": [
+                    "deep learning", "neural network", "deep neural", "dnn", "layers",
+                    "activation function", "hidden layer", "perceptron"
+                ],
+                "Computer Vision": [
+                    "image", "vision", "cnn", "convolutional", "pixel", "visual",
+                    "object detection", "segmentation", "image classification", "resnet"
+                ],
+                "Natural Language Processing": [
+                    "nlp", "natural language", "text", "sentence", "token", "embedding",
+                    "word2vec", "bert", "language model", "translation", "summarization", "sentiment"
+                ],
+                "Transformers": [
+                    "transformer", "encoder", "decoder", "self-attention",
+                    "multi-head", "positional encoding", "bert", "gpt", "t5"
+                ],
+            },
+            "Neural Networks": {
+                "Optimization": [
+                    "optimizer", "gradient descent", "adam", "sgd", "learning rate",
+                    "backpropagation", "convergence", "minimize", "loss function"
+                ],
+                "Attention Mechanism": [
+                    "attention", "query", "key", "value", "attention weights", "scaled dot-product",
+                    "attention score", "context vector"
+                ],
+                "Sequence Modeling": [
+                    "sequence", "rnn", "lstm", "gru", "recurrent", "time step",
+                    "vanishing gradient", "long short-term memory"
+                ],
+                "Training Techniques": [
+                    "batch", "epoch", "iteration", "dropout", "regularization", "overfitting",
+                    "underfitting", "early stopping", "data augmentation"
+                ],
+            },
+            "Data Science": {
+                "Data Preprocessing": [
+                    "preprocessing", "normalization", "standardization", "cleaning",
+                    "feature engineering", "data preparation", "scaling", "encoding"
+                ],
+                "Evaluation Metrics": [
+                    "accuracy", "precision", "recall", "f1", "loss", "metric", "evaluate",
+                    "validation", "test set", "confusion matrix", "roc", "auc"
+                ],
+                "Statistical Analysis": [
+                    "statistics", "probability", "distribution", "hypothesis", "correlation",
+                    "variance", "mean", "median", "standard deviation"
+                ],
+            },
         }
+
+        # Flatten for backward compatibility (old topic_keywords)
+        self.topic_keywords = {}
+        for main_cat, sub_topics in self.topic_taxonomy.items():
+            for sub_topic, keywords in sub_topics.items():
+                key = sub_topic.lower().replace(" ", "_")
+                self.topic_keywords[key] = keywords
 
         # Difficulty indicators
         self.difficulty_indicators = {
@@ -163,6 +185,63 @@ class QuestionTagger:
 
         return topic_scores
 
+    def _calculate_hierarchical_scores(self, text: str) -> Dict[str, Dict[str, float]]:
+        """
+        Calculate hierarchical topic scores.
+        Returns: {main_category: {sub_topic: score}}
+        """
+        text_lower = text.lower()
+        hierarchical_scores = {}
+
+        for main_category, sub_topics in self.topic_taxonomy.items():
+            hierarchical_scores[main_category] = {}
+
+            for sub_topic, keywords in sub_topics.items():
+                score = 0.0
+                for keyword in keywords:
+                    count = text_lower.count(keyword)
+                    if count > 0:
+                        # Weight longer keywords more heavily
+                        score += count * (1 + len(keyword) / 20)
+
+                hierarchical_scores[main_category][sub_topic] = score
+
+        return hierarchical_scores
+
+    def _get_top_category_and_subtags(self, hierarchical_scores: Dict[str, Dict[str, float]],
+                                       max_subtags: int = 3) -> tuple:
+        """
+        From hierarchical scores, determine:
+        1. The main category (highest total score)
+        2. Top 2-3 sub-tags within that category
+
+        Returns: (main_category, [sub_tag1, sub_tag2, ...], confidence_score)
+        """
+        # Calculate total score for each main category
+        category_totals = {}
+        for main_cat, sub_scores in hierarchical_scores.items():
+            category_totals[main_cat] = sum(sub_scores.values())
+
+        # Find the main category with highest score
+        if not category_totals or max(category_totals.values()) == 0:
+            return ("General Knowledge", ["General"], 0.0)
+
+        main_category = max(category_totals, key=category_totals.get)
+        confidence_score = category_totals[main_category]
+
+        # Get top sub-tags within this main category
+        sub_scores = hierarchical_scores[main_category]
+        sorted_subtags = sorted(sub_scores.items(), key=lambda x: x[1], reverse=True)
+
+        # Take top 2-3 sub-tags with score > 0
+        top_subtags = [tag for tag, score in sorted_subtags if score > 0][:max_subtags]
+
+        # If no sub-tags found, use generic subtag
+        if not top_subtags:
+            top_subtags = ["General"]
+
+        return (main_category, top_subtags, confidence_score)
+
     def _detect_difficulty(self, question_text: str) -> str:
         """Detect difficulty from question text only."""
         text_lower = question_text.lower()
@@ -201,10 +280,14 @@ class QuestionTagger:
 
     def tag_question(self, question: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Tag a single question.
+        Tag a single question with hierarchical tags.
 
         Only the question text and the correct answer text are analysed.
-        Returns the tagged question plus a 'confident' boolean flag.
+        Returns the tagged question with:
+        - main_tag: Primary category (e.g., "Technology")
+        - sub_tags: 2-3 specific sub-topics (e.g., ["Machine Learning", "Deep Learning"])
+        - tags: Flat list combining main + sub tags for backward compatibility
+        - confident: Boolean flag indicating confidence level
         """
         question_text = question.get("question", "")
         correct_answer_text = self._get_correct_answer_text(question)
@@ -212,20 +295,20 @@ class QuestionTagger:
         # Combine ONLY question + correct answer for analysis
         analysis_text = question_text + " " + correct_answer_text
 
-        # Topic scoring
-        topic_scores = self._calculate_topic_scores(analysis_text)
-        sorted_topics = sorted(topic_scores.items(), key=lambda x: x[1], reverse=True)
+        # Hierarchical topic scoring
+        hierarchical_scores = self._calculate_hierarchical_scores(analysis_text)
+        main_category, sub_tags, confidence_score = self._get_top_category_and_subtags(
+            hierarchical_scores, max_subtags=3
+        )
 
-        # Top topics above threshold
-        top_topics = [t for t, s in sorted_topics[:3] if s > 0]
-        top_score = sorted_topics[0][1] if sorted_topics else 0
-        confident = top_score >= self.CONFIDENCE_THRESHOLD
+        # Determine confidence
+        confident = confidence_score >= self.CONFIDENCE_THRESHOLD
 
-        # If nothing found, try raw keywords (still low-confidence)
-        if not top_topics:
+        # If nothing found with good confidence, try raw keywords
+        if not confident and confidence_score == 0:
             keywords = self._extract_keywords(analysis_text)
-            top_topics = keywords[:3] if keywords else ["general"]
-            confident = False
+            sub_tags = keywords[:2] if keywords else ["General"]
+            main_category = "General Knowledge"
 
         # Difficulty and Bloom's from question text only
         difficulty = self._detect_difficulty(question_text)
@@ -235,8 +318,9 @@ class QuestionTagger:
         key_concepts = self._extract_keywords(analysis_text)[:5]
 
         tagged = question.copy()
-        tagged["tags"]           = top_topics
-        tagged["category"]       = top_topics[0] if top_topics else "general"
+        # Hierarchical structure (clean output)
+        tagged["main_tag"]       = main_category
+        tagged["sub_tags"]       = sub_tags[:3]  # Max 3 sub-tags
         tagged["difficulty"]     = difficulty
         tagged["bloom_category"] = bloom_category
         tagged["key_concepts"]   = key_concepts
