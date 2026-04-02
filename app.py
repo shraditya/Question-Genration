@@ -13,7 +13,7 @@ import os
 app = Flask(__name__)
 
 # Configuration
-MODEL_PATH = os.getenv('MODEL_PATH', './mcq_intent_model')
+MODEL_PATH = os.getenv('MODEL_PATH', '/Users/k/rag_questions/similiarty /mcq_intent_model')
 TEST_DATA_PATH = './similiarty_data/test.csv'
 CUTOFF_THRESHOLD = 0.75  # Minimum similarity to report
 DUPLICATE_THRESHOLD = 0.90  # Threshold for duplicate classification

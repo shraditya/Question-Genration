@@ -17,7 +17,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Configuration
-MODEL_PATH = os.getenv('MODEL_PATH', './mcq_intent_model')
+MODEL_PATH = os.getenv('MODEL_PATH', '/Users/k/rag_questions/similiarty /mcq_intent_model')
 TEST_DATA_PATH = './similiarty_data/test.csv'
 CUTOFF_THRESHOLD = 0.75  # Minimum similarity to report
 DUPLICATE_THRESHOLD = 0.90  # Threshold for duplicate classification
@@ -32,10 +32,9 @@ def load_model():
         print("✓ Fine-tuned model loaded successfully!")
         return model
     except Exception as e:
-        print(f"⚠ Warning: Could not load model from {MODEL_PATH}: {e}")
-        print("  Using base model 'all-MiniLM-L6-v2' instead")
-        model = SentenceTransformer('all-MiniLM-L6-v2')
-        return model
+        raise RuntimeError(
+            f"Could not load fine-tuned model from '{MODEL_PATH}': {e}"
+        )
 
 
 def calculate_adaptive_similarity(q_sim, a_sim):

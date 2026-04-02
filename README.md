@@ -1,100 +1,121 @@
-# Question Generation - RAG MCQ Generator
+# RAG MCQ Generator (Frontend + Backend)
 
-A document-to-question workflow with tagging and similarity review in the terminal app.
+Full-stack application for generating MCQs from documents, auto-tagging them, checking similarity, and exporting results.
+
+## Tech Stack
+
+- Backend: FastAPI + Python
+- Frontend: React + Vite + Tailwind CSS
+- LLM provider: Groq API
+- Similarity model: fine-tuned sentence-transformer
 
 ## Features
 
-- 📁 Upload documents (PDF, DOCX, TXT) and generate MCQs from them
-- 🤖 LLM-powered question generation via **Groq API**
-- 🏷️ Auto-tag questions with hierarchical tags: `main_tag` + `sub_tags`
-- 📂 Upload existing MCQ files (JSON/CSV, flexible structures)
-- 🔄 Refine questions with feedback
-- 🔍 Similarity check using fine-tuned sentence-transformer model
-- 📤 Export to JSON or CSV
+- Upload documents (PDF, DOCX, TXT) and generate MCQs
+- Upload existing MCQ files (JSON/CSV)
+- Auto-tag MCQs using hierarchical tags (`main_tag`, `sub_tags`)
+- Similarity detection for duplicate or highly similar questions
+- Export MCQs as JSON or CSV
+- Interactive API docs via Swagger UI
+
+## Prerequisites
+
+- Python 3.10+
+- Conda (recommended environment name: `rag_mcq`)
+- Node.js 18+
+- npm
+- Groq API key
 
 ## Setup
 
-### 1. Clone the repo
+### 1. Clone repository
+
 ```bash
 git clone https://github.com/shraditya/Question-Genration.git
 cd Question-Genration
 ```
 
-### 2. Install dependencies
+### 2. Install backend dependencies
+
 ```bash
 conda create -n rag_mcq python=3.10
 conda activate rag_mcq
 pip install -r requirements.txt
 ```
 
-### 3. Configure your API key
-```bash
-cp .env.example .env
-# Edit .env and paste your Groq API key
-```
-Get a free key at: https://console.groq.com
-
-### 4. Run the terminal app
-```bash
-python terminal_app.py
-```
-
-### 5. Similarity model path
-By default the app loads:
-
-`/Users/k/rag_questions/similiarty /mcq_intent_model`
-
-You can override with:
+### 3. Install frontend dependencies
 
 ```bash
-export MODEL_PATH=/absolute/path/to/your/fine_tuned_model
+cd frontend
+npm install
+cd ..
 ```
 
-## Menu Options
+### 4. Configure environment
 
-| Option | Description |
-|--------|-------------|
-| 1 | Upload a document (PDF/DOCX/TXT) |
-| 2 | Generate MCQs from the loaded document |
-| 3 | View all MCQs |
-| 4 | Refine MCQs with feedback |
-| 5 | Export MCQs to JSON or CSV |
-| 6 | Clear all data |
-| 7 | Upload an existing MCQ file (JSON/CSV) |
-| 8 | Auto tag MCQs (`main_tag` + `sub_tags`) |
-| 9 | Similarity check |
+Create `.env` in project root:
 
-## JSON Output Format
-
-When exporting JSON, the output keeps hierarchical tags and omits legacy `category`/`tags` fields.
-
-Example:
-
-```json
-{
-	"question": "What is the capital of France?",
-	"options": {
-		"A": "London",
-		"B": "Berlin",
-		"C": "Paris",
-		"D": "Madrid"
-	},
-	"correct_answer": "Paris",
-	"explanation": "",
-	"main_tag": "Social Sciences",
-	"sub_tags": ["Geography", "European capitals", "France"]
-}
+```env
+GROQ_API_KEY=your_groq_api_key_here
+MODEL_PATH=/Users/k/rag_questions/similiarty /mcq_intent_model
+PORT=8000
+DEBUG=False
 ```
 
-## Project Structure
+## Run the Application
 
+### Option A: Start both frontend and backend
+
+```bash
+./start.sh
 ```
-├── terminal_app.py       # Main terminal application
-├── mcq_generator.py      # Groq API integration + hierarchical tagging
-├── rag_system.py         # RAG pipeline with ChromaDB
-├── question_tagger.py    # Local hierarchical question tagger
-├── document_processor.py # PDF/DOCX/TXT text extraction
-├── config.py             # Configuration (reads from .env)
-├── requirements.txt      # Python dependencies
-└── .env.example          # Environment template (copy to .env)
+
+### Option B: Start manually in separate terminals
+
+Terminal 1 (backend):
+
+```bash
+conda activate rag_mcq
+python run_backend.py
 ```
+
+Terminal 2 (frontend):
+
+```bash
+cd frontend
+npm run dev
+```
+
+## URLs
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+- Health Check: http://localhost:8000/health
+
+## Key Project Structure
+
+```text
+backend/
+  api.py                FastAPI application
+  models.py             Pydantic request/response models
+frontend/
+  src/                  React app pages/components/services
+run_backend.py          Backend entrypoint (project-root safe imports)
+start.sh                Starts backend + frontend together
+terminal_app.py         Legacy terminal workflow
+requirements.txt        Python dependencies
+```
+
+## Additional Docs
+
+- START_HERE.md
+- QUICKSTART.md
+- SETUP_REACT.md
+- TROUBLESHOOTING.md
+
+## Notes
+
+- Similarity features require a valid model directory in `MODEL_PATH`.
+- CORS is configured for local frontend dev servers.
+- If port 3000 or 8000 is occupied, stop the running process and restart.
