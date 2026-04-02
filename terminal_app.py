@@ -8,12 +8,22 @@ import os
 import sys
 from typing import List, Dict, Any
 import json
+from itertools import combinations
+from pathlib import Path
+
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 
 from document_processor import DocumentProcessor
 from rag_system import RAGSystem
 from mcq_generator import MCQGenerator
 from config import Config
-from question_tagger import QuestionTagger
+
+
+SIMILARITY_MODEL_PATH = os.getenv('MODEL_PATH', '/Users/k/rag_questions/similiarty /mcq_intent_model')
+CUTOFF_THRESHOLD = 0.75
+DUPLICATE_THRESHOLD = 0.90
+HIGH_SIMILARITY_THRESHOLD = 0.80
 
 class TerminalMCQApp:
     """Terminal-based MCQ Generation Application"""
@@ -21,10 +31,10 @@ class TerminalMCQApp:
     def __init__(self):
         self.rag_system = None
         self.mcq_generator = None
-        self.tagger = QuestionTagger()
+        self.similarity_model = None
         self.current_mcqs = []
         self.document_text = ""
-
+        
         # Initialize components
         self._initialize_components()
     
@@ -42,14 +52,214 @@ class TerminalMCQApp:
         except Exception as e:
             print(f"❌ Error initializing components: {str(e)}")
             sys.exit(1)
-    
+
+    def _load_similarity_model(self):
+        """Load only the fine-tuned similarity model (no fallback)."""
+        if self.similarity_model is not None:
+            return self.similarity_model
+
+        model_dir = Path(SIMILARITY_MODEL_PATH)
+        expected_weight_files = [
+            model_dir / 'model.safetensors',
+            model_dir / 'pytorch_model.bin',
+        ]
+        if not model_dir.exists():
+            raise RuntimeError(
+                f"Fine-tuned model path does not exist: '{SIMILARITY_MODEL_PATH}'. "
+                "Set MODEL_PATH to your trained model directory."
+            )
+        if not any(p.exists() for p in expected_weight_files):
+            raise RuntimeError(
+                "Fine-tuned model is incomplete. Missing weight file in "
+                f"'{SIMILARITY_MODEL_PATH}'. Expected one of: model.safetensors, pytorch_model.bin. "
+                "Re-export your trained model with model.save_pretrained(<path>) and tokenizer.save_pretrained(<path>)."
+            )
+
+        print(f"🧠 Loading similarity model from: {SIMILARITY_MODEL_PATH}")
+        try:
+            self.similarity_model = SentenceTransformer(SIMILARITY_MODEL_PATH)
+            print("✅ Similarity model loaded")
+        except Exception as e:
+            raise RuntimeError(
+                f"Could not load fine-tuned similarity model from '{SIMILARITY_MODEL_PATH}': {e}"
+            )
+
+        return self.similarity_model
+
+    def _resolve_answer_text(self, mcq: Dict[str, Any]) -> str:
+        """Resolve answer text from the MCQ shape (letter or direct text)."""
+        answer = str(mcq.get('correct_answer', '')).strip()
+        options = mcq.get('options', {}) or {}
+
+        if isinstance(options, dict) and answer in options:
+            return str(options.get(answer, '')).strip()
+
+        return answer
+
+    def _sync_hierarchical_tag_fields(self, mcq: Dict[str, Any]) -> Dict[str, Any]:
+        """Mirror hierarchical tags into legacy display/export fields."""
+        main_tag = mcq.get('main_tag') or mcq.get('category') or ''
+        sub_tags = mcq.get('sub_tags') or []
+
+        if isinstance(sub_tags, str):
+            sub_tags = [s.strip() for s in sub_tags.split(',') if s.strip()]
+        elif not isinstance(sub_tags, list):
+            sub_tags = [str(sub_tags).strip()] if str(sub_tags).strip() else []
+
+        if main_tag:
+            mcq['main_tag'] = main_tag
+            mcq['category'] = main_tag
+
+        if sub_tags:
+            mcq['sub_tags'] = sub_tags[:3]
+
+        legacy_tags = []
+        if main_tag:
+            legacy_tags.append(main_tag)
+        for tag in sub_tags:
+            if tag and tag not in legacy_tags:
+                legacy_tags.append(tag)
+
+        if legacy_tags:
+            mcq['tags'] = legacy_tags
+
+        return mcq
+
+    def _calculate_adaptive_similarity(self, q_sim: float, a_sim: float):
+        """Use the same adaptive weighting used in main.py."""
+        answer_weight = 0.15 + 0.70 * (1.0 - q_sim)
+        question_weight = 1.0 - answer_weight
+        final_sim = answer_weight * a_sim + question_weight * q_sim
+        return final_sim, answer_weight
+
+    def _classify_similarity(self, sim_score: float) -> str:
+        """Classify similarity level based on shared thresholds."""
+        if sim_score >= DUPLICATE_THRESHOLD:
+            return 'Duplicate'
+        if sim_score >= HIGH_SIMILARITY_THRESHOLD:
+            return 'Highly Similar'
+        if sim_score >= CUTOFF_THRESHOLD:
+            return 'Similar'
+        return 'Different'
+
+    def _find_similar_tagged_questions(self, threshold: float = CUTOFF_THRESHOLD) -> List[Dict[str, Any]]:
+        """Find similar question pairs and include tag-level overlap details."""
+        if len(self.current_mcqs) < 2:
+            return []
+
+        model = self._load_similarity_model()
+
+        questions = [str(q.get('question', '')).strip() for q in self.current_mcqs]
+        answers = [self._resolve_answer_text(q) for q in self.current_mcqs]
+
+        q_embs = model.encode(questions, batch_size=128, normalize_embeddings=True)
+        a_embs = model.encode(answers, batch_size=128, normalize_embeddings=True)
+
+        q_mat = cosine_similarity(q_embs, q_embs)
+        a_mat = cosine_similarity(a_embs, a_embs)
+
+        results = []
+        for i, j in combinations(range(len(self.current_mcqs)), 2):
+            q_sim = float(q_mat[i][j])
+            a_sim = float(a_mat[i][j])
+            tags_i = set(self.current_mcqs[i].get('tags', []) or [])
+            tags_j = set(self.current_mcqs[j].get('tags', []) or [])
+            overlap = sorted(tags_i.intersection(tags_j))
+
+            final_sim, answer_weight = self._calculate_adaptive_similarity(q_sim, a_sim)
+
+            if final_sim < threshold:
+                continue
+
+            results.append({
+                'idx1': i,
+                'idx2': j,
+                'q1': self.current_mcqs[i].get('question', ''),
+                'q2': self.current_mcqs[j].get('question', ''),
+                'question_sim': round(q_sim, 4),
+                'answer_sim': round(a_sim, 4),
+                'answer_weight': round(answer_weight, 4),
+                'final_sim': round(final_sim, 4),
+                'label': self._classify_similarity(final_sim),
+                'shared_tags': overlap,
+            })
+
+        results.sort(key=lambda x: x['final_sim'], reverse=True)
+        return results
+
+    def _run_similarity_check(self):
+        """Run and print similarity analysis for currently loaded/tagged MCQs."""
+        if len(self.current_mcqs) < 2:
+            print("❌ Need at least 2 questions to run similarity check.")
+            return
+
+        print("\n🔍 QUESTION SIMILARITY CHECK")
+        print("-" * 30)
+        try:
+            user_threshold = input(f"Threshold (default {CUTOFF_THRESHOLD}): ").strip()
+            threshold = float(user_threshold) if user_threshold else CUTOFF_THRESHOLD
+        except ValueError:
+            print(f"⚠ Invalid threshold. Using default {CUTOFF_THRESHOLD}.")
+            threshold = CUTOFF_THRESHOLD
+
+        try:
+            results = self._find_similar_tagged_questions(threshold=threshold)
+        except Exception as e:
+            print(f"❌ Similarity check failed: {e}")
+            return
+
+        if not results:
+            print(f"✅ No similar pairs found above threshold {threshold}.")
+            return
+
+        duplicates = sum(1 for r in results if r['label'] == 'Duplicate')
+        highly_similar = sum(1 for r in results if r['label'] == 'Highly Similar')
+        similar = sum(1 for r in results if r['label'] == 'Similar')
+
+        print(f"✅ Found {len(results)} similar pairs")
+        print(f"   Duplicates: {duplicates} | Highly Similar: {highly_similar} | Similar: {similar}")
+
+        max_show = 10
+        for k, r in enumerate(results[:max_show], 1):
+            tags_msg = ', '.join(r['shared_tags']) if r['shared_tags'] else 'none'
+            print(f"\n{k}. {r['label']} | score={r['final_sim']} | shared_tags={tags_msg}")
+            print(f"   Q{r['idx1'] + 1}: {r['q1'][:120]}")
+            print(f"   Q{r['idx2'] + 1}: {r['q2'][:120]}")
+
+    def _auto_tag_mcqs(self):
+        """Run auto-tagging using Groq LLM hierarchical batch tagger."""
+        if not self.current_mcqs:
+            print("❌ No MCQs loaded. Use option 7 to upload an MCQ file first.")
+            return
+
+        before = sum(1 for q in self.current_mcqs if q.get('main_tag'))
+        print("🏷️  Auto-tagging with Groq LLM (hierarchical main_tag + sub_tags)...")
+        try:
+            # Re-tag all loaded MCQs so output always reflects LLM tagging.
+            tagged = self.mcq_generator.auto_tag_questions(self.current_mcqs)
+            self.current_mcqs = [self._sync_hierarchical_tag_fields(q) for q in tagged]
+        except Exception as e:
+            print(f"❌ Auto-tagging failed: {e}")
+            return
+
+        after = sum(1 for q in self.current_mcqs if q.get('main_tag'))
+        confident = sum(1 for q in self.current_mcqs if q.get('confident'))
+        print(f"✅ Tagging complete: {after}/{len(self.current_mcqs)} tagged (was {before}).")
+        print(f"🔎 Confident tags: {confident}/{len(self.current_mcqs)}")
+
+        print("🔎 Tagged preview:")
+        for i, q in enumerate(self.current_mcqs[:8], 1):
+            main_tag = q.get('main_tag', 'General Knowledge')
+            sub_tags = q.get('sub_tags', [])
+            print(f"   {i}. {main_tag} | {', '.join(sub_tags)}")
+
     def run(self):
         """Run the main terminal application"""
         self._print_banner()
         
         while True:
             self._show_main_menu()
-            choice = input("\n🎯 Enter your choice (1-9): ").strip()
+            choice = input("\n🎯 Enter your choice (0-9): ").strip()
 
             if choice == "1":
                 self._upload_document()
@@ -66,9 +276,9 @@ class TerminalMCQApp:
             elif choice == "7":
                 self._upload_mcq_file()
             elif choice == "8":
-                self._manual_tag_mcqs()
+                self._auto_tag_mcqs()
             elif choice == "9":
-                self._compare_tags()
+                self._run_similarity_check()
             elif choice == "0":
                 print("\n👋 Goodbye! Thanks for using RAG MCQ Generator!")
                 break
@@ -95,8 +305,8 @@ class TerminalMCQApp:
         print("5. 📤 Export MCQs")
         print("6. 🗑️  Clear Data")
         print("7. 📂 Upload MCQ File (JSON/CSV)")
-        print("8. 🏷️  Manual Tag MCQs")
-        print("9. 📊 Compare Tags with Ground Truth")
+        print("8. 🏷️  Auto Tag MCQs (Main + Sub Tags)")
+        print("9. 🔍 Similarity Check")
         print("0. ❌ Exit")
 
         if self.document_text:
@@ -202,6 +412,7 @@ class TerminalMCQApp:
                 context_chunks,
                 num_questions
             )
+            self.current_mcqs = [self._sync_hierarchical_tag_fields(q) for q in self.current_mcqs]
             
             print(f"✅ Generated {len(self.current_mcqs)} MCQs successfully!")
             
@@ -223,21 +434,24 @@ class TerminalMCQApp:
             print(f"\n📝 Question {i}:")
             print(f"Q: {mcq.get('question', '')}")
 
-            # Display hierarchical tags
-            main_tag = mcq.get('main_tag')
+            # Display tags
+            main_tag = mcq.get('main_tag') or mcq.get('category', 'general')
             sub_tags = mcq.get('sub_tags', [])
+            tags = mcq.get('tags', [])
             difficulty = mcq.get('difficulty', 'medium')
+            confident = mcq.get('confident', None)
 
             if main_tag:
-                print(f"🎯 Main Category: {main_tag}")
+                print(f"🏷️  Main Tag: {main_tag}")
             if sub_tags:
-                print(f"🏷️  Sub-Tags: {', '.join(sub_tags)}")
+                print(f"   Sub Tags: {', '.join(sub_tags)}")
+            elif tags:
+                print(f"🏷️  Tags: {', '.join(tags)}")
 
-            print(f"📊 Difficulty: {difficulty}")
-            
-            intent = mcq.get('intent')
-            if intent:
-                print(f"🧠 Intent: {intent}")
+            if confident is not None:
+                print(f"📊 Confidence: {confident} | Difficulty: {difficulty}")
+            else:
+                print(f"📊 Difficulty: {difficulty}")
 
             # Options
             options = mcq.get('options', {})
@@ -268,7 +482,7 @@ class TerminalMCQApp:
                 refined_mcqs = self.mcq_generator.refine_mcqs(self.current_mcqs, feedback)
                 
                 if refined_mcqs:
-                    self.current_mcqs = refined_mcqs
+                    self.current_mcqs = [self._sync_hierarchical_tag_fields(q) for q in refined_mcqs]
                     print("✅ Questions refined successfully!")
                 else:
                     print("⚠️  No changes made to questions.")
@@ -289,14 +503,20 @@ class TerminalMCQApp:
         print("1. Export to JSON file")
         print("2. Export to CSV file")
         print("3. Display formatted text")
-        print("4. Export to Excel (.xlsx) file")
         
-        choice = input("Enter choice (1-4): ").strip()
+        choice = input("Enter choice (1-3): ").strip()
         
         if choice == "1":
             filename = input("Enter filename (default: mcqs.json): ").strip() or "mcqs.json"
             try:
-                json_data = {"mcqs": self.current_mcqs}
+                formatted_mcqs = []
+                for mcq in self.current_mcqs:
+                    out = dict(mcq)
+                    out.pop('category', None)
+                    out.pop('tags', None)
+                    formatted_mcqs.append(out)
+
+                json_data = {"mcqs": formatted_mcqs}
                 with open(filename, 'w', encoding='utf-8') as f:
                     json.dump(json_data, f, indent=2, ensure_ascii=False)
                 print(f"✅ MCQs exported to {filename}")
@@ -337,35 +557,6 @@ class TerminalMCQApp:
                 print(f"Correct Answer: {mcq.get('correct_answer', '')}")
                 print(f"Explanation: {mcq.get('explanation', '')}")
                 print("-" * 40)
-                
-        elif choice == "4":
-            filename = input("Enter filename (default: mcqs.xlsx): ").strip() or "mcqs.xlsx"
-            if not filename.endswith('.xlsx'):
-                filename += '.xlsx'
-            try:
-                import pandas as pd
-                rows = []
-                for mcq in self.current_mcqs:
-                    options = mcq.get('options', {})
-                    row = {
-                        'Question': mcq.get('question', ''),
-                        'Option A': options.get('A', ''),
-                        'Option B': options.get('B', ''),
-                        'Option C': options.get('C', ''),
-                        'Option D': options.get('D', ''),
-                        'Correct Answer': mcq.get('correct_answer', ''),
-                        'Explanation': mcq.get('explanation', ''),
-                        'Intent': mcq.get('intent', ''),
-                        'Tags': ', '.join(mcq.get('tags', []))
-                    }
-                    rows.append(row)
-                df = pd.DataFrame(rows)
-                df.to_excel(filename, index=False)
-                print(f"✅ MCQs exported to {filename}")
-            except ImportError:
-                print("❌ pandas or openpyxl missing. Run: conda run -n rag_mcq pip install pandas openpyxl")
-            except Exception as e:
-                print(f"❌ Error exporting to Excel: {e}")
         
         else:
             print("❌ Invalid choice.")
@@ -388,7 +579,7 @@ class TerminalMCQApp:
     #  NEW: Upload an existing MCQ file
     # ─────────────────────────────────────────────
     def _normalize_mcq(self, raw: dict) -> dict:
-        """Normalize any MCQ dict shape into standard {question, options{A-D}, correct_answer, explanation}"""
+        """Normalize any MCQ dict shape into the terminal app's standard MCQ structure."""
         mcq = {}
 
         # Question text
@@ -414,14 +605,37 @@ class TerminalMCQApp:
         mcq["explanation"] = raw.get("explanation") or raw.get("Explanation") or ""
 
         # Preserve existing tags/category if present
-        for key in ("tags", "category", "difficulty", "bloom_category", "topic", "id"):
+        for key in ("tags", "category", "main_tag", "sub_tags", "confident", "difficulty", "bloom_category", "topic", "id", "key_concepts"):
             if key in raw:
                 mcq[key] = raw[key]
 
+        mcq = self._sync_hierarchical_tag_fields(mcq)
+
         return mcq
 
+    def _fast_tag_untagged_questions(self, questions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Tag only untagged questions using local ML tagger (fast, no API calls)."""
+        untagged_indices = [i for i, q in enumerate(questions) if not q.get('tags')]
+        if not untagged_indices:
+            return questions
+
+        untagged_batch = [questions[i] for i in untagged_indices]
+        print(f"🏷️  Fast-tagging {len(untagged_batch)} question(s) with local model...")
+        tagged_batch = self.mcq_generator.tag_questions(untagged_batch)
+
+        for idx, tagged_q in zip(untagged_indices, tagged_batch):
+            questions[idx].update({
+                'tags': tagged_q.get('tags', questions[idx].get('tags', ['general'])),
+                'category': tagged_q.get('category', questions[idx].get('category', 'general')),
+                'difficulty': tagged_q.get('difficulty', questions[idx].get('difficulty', 'medium')),
+                'bloom_category': tagged_q.get('bloom_category', questions[idx].get('bloom_category', 'understand')),
+                'key_concepts': tagged_q.get('key_concepts', questions[idx].get('key_concepts', [])),
+            })
+
+        return questions
+
     def _upload_mcq_file(self):
-        """Load an MCQ file in any format, normalize it, then auto-tag untagged questions"""
+        """Load an MCQ file in any format and normalize it (no auto-tag/similarity)."""
         print("\n📂 UPLOAD MCQ FILE")
         print("-" * 30)
         file_path = input("Enter file path: ").strip()
@@ -483,181 +697,10 @@ class TerminalMCQApp:
 
         print(f"✅ Loaded {len(mcqs)} questions from '{os.path.basename(file_path)}'")
 
-        # Use LLM to tag every question (question text + correct answer only)
-        mcqs = self.mcq_generator.llm_tag_questions(mcqs)
-
         self.current_mcqs = mcqs
-        tagged      = sum(1 for q in mcqs if q.get('tags'))
-        needs_input = sum(1 for q in mcqs if not q.get('tags'))
-        print(f"✅ {tagged}/{len(mcqs)} tagged by LLM.")
-        if needs_input:
-            print(f"⚠️  {needs_input} question(s) the LLM couldn't tag — use option 8 to fill them in.")
-        else:
-            print("💡 All tagged! Use option 3 to view  |  option 5 to export.")
-
-
-    def _manual_tag_mcqs(self):
-        """
-        Manual tagging for questions the LLM couldn't tag (needs_review=True / empty tags).
-        Shows question text + correct answer for each, lets user type tags.
-        """
-        if not self.current_mcqs:
-            print("❌ No MCQs loaded. Use option 7 to upload an MCQ file first.")
-            return
-
-        # Find questions that need review
-        needs_review = [q for q in self.current_mcqs if q.get('needs_review') or not q.get('tags')]
-        total = len(self.current_mcqs)
-
-        print(f"\n🏷️  MANUAL TAGGING  —  {len(needs_review)}/{total} question(s) need your input")
-        print("═" * 60)
-
-        if not needs_review:
-            print("✅ All questions are already tagged by the LLM.")
-            override = input("Tag ALL questions manually instead? (y/n, default n): ").strip().lower()
-            if override != 'y':
-                print("💡 Use option 5 to export  |  option 3 to view.")
-                return
-            needs_review = self.current_mcqs
-
-        print("For each question:")
-        print("  • Type your tags (comma-separated)  —  e.g. 'sql, select statement'")
-        print("  • Press Enter to leave as-is and skip")
-        print("  • Type 'q' to quit early\n")
-
-        changed = 0
-
-        for i, mcq in enumerate(needs_review, 1):
-            q_text   = mcq.get('question', '(no text)')
-            # Resolve correct answer text from options dict
-            options  = mcq.get('options', {})
-            ans_key  = mcq.get('correct_answer', '?')
-            if isinstance(options, dict):
-                ans_text = next(
-                    (v for k, v in options.items()
-                     if str(k).strip().upper() == str(ans_key).strip().upper()),
-                    str(ans_key)
-                )
-            else:
-                ans_text = str(ans_key)
-
-            existing = ', '.join(mcq.get('tags', [])) or '— (empty)'
-            auto_tags = mcq.get('tags', [])
-            auto_diff = mcq.get('difficulty', 'medium')
-            auto_bloom = mcq.get('bloom_category', 'understand')
-
-            print(f"\n{'═'*60}")
-            print(f"Q {i}/{len(needs_review)}  {'⚠️  (LLM unsure)' if mcq.get('needs_review') else '✅ (LLM tagged)'}")
-            print(f"Q: {q_text}")
-            print(f"✔ Correct answer: {ans_text}")
-            print(f"   Current tags: {existing}")
-
-            # ── Tags ──────────────────────────────────────────────
-            tag_input = input("\nYour tags (comma-separated, or Enter to skip): ").strip()
-            if tag_input.lower() == 'q':
-                print("⏹ Stopped.")
-                break
-            if tag_input:
-                tags = [t.strip() for t in tag_input.split(',') if t.strip()]
-                mcq['tags'] = tags      # only the tags field is updated
-                changed += 1
-
-            final_tags = ', '.join(mcq.get('tags', [])) or '— (still empty)'
-            print(f"   ✅ Saved — tags: {final_tags}")
-
-        print(f"\n{'═'*60}")
-        print(f"🏷️  Done — {changed} question(s) manually tagged.")
-        still_empty = sum(1 for q in self.current_mcqs if not q.get('tags'))
-        if still_empty:
-            print(f"⚠️  {still_empty} question(s) still have no tags.")
-        print("💡 Use option 9 to compare  |  option 5 to export  |  option 3 to view.")
-
-
-    def _compare_tags(self):
-        """
-        Compare LLM-generated tags on loaded questions against a ground-truth JSON.
-
-        Ground-truth JSON format:
-          [{"question_number": 1, "tag": "Science"}, ...]
-
-        Matching is done by question index (question_number 1 = first loaded MCQ).
-        """
-        if not self.current_mcqs:
-            print("❌ No MCQs loaded. Upload a file first (option 7).")
-            return
-
-        print("\n📊 COMPARE TAGS WITH GROUND TRUTH")
-        print("═" * 60)
-        gt_path = input("Enter ground-truth JSON file path: ").strip()
-
-        # Resolve bare filename
-        if not os.path.dirname(gt_path):
-            local = os.path.join(os.path.dirname(os.path.abspath(__file__)), gt_path)
-            if os.path.exists(local):
-                gt_path = local
-
-        if not os.path.exists(gt_path):
-            print(f"❌ File not found: {gt_path}")
-            return
-
-        try:
-            with open(gt_path, encoding='utf-8') as f:
-                gt_data = json.load(f)
-        except Exception as e:
-            print(f"❌ Could not read file: {e}")
-            return
-
-        # Build {question_number: tag} map
-        if not isinstance(gt_data, list):
-            print("❌ Ground-truth JSON must be a list of {question_number, tag} objects.")
-            return
-
-        gt_map = {}
-        for entry in gt_data:
-            num = entry.get('question_number') or entry.get('id')
-            tag = entry.get('tag') or entry.get('tags') or ""
-            if isinstance(tag, list):
-                tag = tag[0] if tag else ""
-            if num:
-                gt_map[int(num)] = str(tag).strip()
-
-        print(f"\n{'No':>4}  {'LLM Tag':<30}  {'Correct Tag':<30}  Match")
-        print("-" * 72)
-
-        match_count  = 0
-        total_compared = 0
-
-        for i, mcq in enumerate(self.current_mcqs, start=1):
-            correct_tag = gt_map.get(i, "(not in ground truth)")
-            if correct_tag == "(not in ground truth)":
-                continue
-
-            llm_tags = mcq.get('tags', [])
-            llm_tag  = ', '.join(llm_tags) if llm_tags else '(empty)'
-
-            # Case-insensitive match on any of the LLM tags
-            matched = any(
-                t.strip().lower() == correct_tag.lower()
-                for t in llm_tags
-            )
-            if matched:
-                match_count += 1
-
-            icon = "✅" if matched else "❌"
-            total_compared += 1
-            print(f"{i:>4}  {llm_tag:<30}  {correct_tag:<30}  {icon}")
-
-        print("-" * 72)
-        if total_compared:
-            pct = 100 * match_count / total_compared
-            print(f"\n🎯 Accuracy: {match_count}/{total_compared} ({pct:.1f}%)")
-            wrong = total_compared - match_count
-            if wrong:
-                print(f"⚠️  {wrong} mismatches — use option 8 to fix, then option 5 to export.")
-            else:
-                print("🎉 All tags match!")
-        else:
-            print("⚠️  No overlap between loaded questions and ground-truth numbers.")
+        tagged = sum(1 for q in mcqs if q.get('main_tag') or q.get('category') or q.get('tags'))
+        print(f"🏷️  Existing tags in file: {tagged}/{len(mcqs)}")
+        print("💡 Next: option 8 for auto-tagging (main + sub tags), then option 9 for similarity check.")
 
 
 def main():

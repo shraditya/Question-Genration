@@ -1,0 +1,989 @@
+{
+  "meta": {
+    "generated_at": "2026-03-27T00:50:43.958475",
+    "model": "mcq_intent_model",
+    "threshold": 0.9,
+    "total_duplicate_pairs": 186
+  },
+  "per_file": {
+    "C_CPP": {
+      "file": "C&C++_Questions_314_updated.xlsx",
+      "total_questions": 312,
+      "duplicate_pairs_count": 76,
+      "duplicate_pairs": [
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { printf(\"%d\", i); i++; }?",
+          "question2": "What is the output of the following code: int i = 0; while (i < 3) { i++; } printf(\"%d\", i);?",
+          "score": 0.9967
+        },
+        {
+          "question1": "What is the result of printf(\"%f\", 5 / 2) in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5.0 / 2) in a C program?",
+          "score": 0.9944
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { printf(\"%d\", i); i++; }?",
+          "question2": "What is the output of the following code: int i = 0; do { printf(\"%d\", i); i++; } while (i < 3);?",
+          "score": 0.9929
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { i++; } printf(\"%d\", i);?",
+          "question2": "What is the output of the following code: int i = 0; do { printf(\"%d\", i); i++; } while (i < 3);?",
+          "score": 0.9916
+        },
+        {
+          "question1": "What is the result of cout << 5 / 2 in a C++ program?",
+          "question2": "What is the result of cout << 5.0 / 2 in a C++ program?",
+          "score": 0.9896
+        },
+        {
+          "question1": "What is the output of the following code: int x = 10; int *ptr = &x; printf(\"%d\", *ptr);?",
+          "question2": "What is the output of the following code: int x = 5; int *ptr = &x; *ptr = 20; printf(\"%d\", x);?",
+          "score": 0.9879
+        },
+        {
+          "question1": "What is the output of the following code: union Data { int i; float f; }; union Data d; d.i = 10; printf(\"%d\", d.i);?",
+          "question2": "What is the output of the following code: union Data { int i; float f; } d; d.f = 10.5; printf(\"%f\", d.f);?",
+          "score": 0.9772
+        },
+        {
+          "question1": "How do you define an array of pointers to functions that take an int argument and return void in C?",
+          "question2": "How do you define an array of pointers to functions that take an int argument and return void in C++?",
+          "score": 0.977
+        },
+        {
+          "question1": "What is the output of cout << ('A' + 1) in a C++ program?",
+          "question2": "What is the output of cout << ('a' - 32) in a C++ program?",
+          "score": 0.9768
+        },
+        {
+          "question1": "What is the correct way to include a header file myheader.h in a C program?",
+          "question2": "What is the correct way to include a header file myheader.h in a C++ program?",
+          "score": 0.9705
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "score": 0.9689
+        },
+        {
+          "question1": "What is the output of cout << ('A' + 1) in a C++ program?",
+          "question2": "What is the output of cout << (10 << 1) in a C++ program?",
+          "score": 0.9681
+        },
+        {
+          "question1": "How do you declare a function in C?",
+          "question2": "What is the correct way to declare a function in C?",
+          "score": 0.9665
+        },
+        {
+          "question1": "What does the %d format specifier represent in printf and scanf functions?",
+          "question2": "What does the %d format specifier represent in printf and scanf functions in C++?",
+          "score": 0.9664
+        },
+        {
+          "question1": "How do you define a macro PI with value 3.14159 in C?",
+          "question2": "How do you define a macro PI with value 3.14159 in C++?",
+          "score": 0.9643
+        },
+        {
+          "question1": "What is the result of sizeof(char) in C?",
+          "question2": "What is the result of sizeof(char) in C++?",
+          "score": 0.9629
+        },
+        {
+          "question1": "How do you access the value pointed to by a pointer ptr in C?",
+          "question2": "How do you access the value pointed to by a pointer ptr in C++?",
+          "score": 0.9612
+        },
+        {
+          "question1": "What is the output of the following code: int x = 10; int *ptr = &x; printf(\"%d\", *ptr);?",
+          "question2": "What is the output of the following code: int x = 10; int *ptr1 = &x; int **ptr2 = &ptr1; printf(\"%d\", **ptr2);?",
+          "score": 0.9573
+        },
+        {
+          "question1": "Which operator is used to access the value at the address pointed to by a pointer in C?",
+          "question2": "Which operator is used to access the value at the address pointed to by a pointer in C++?",
+          "score": 0.9541
+        },
+        {
+          "question1": "What is the output of the following code: int x = 10; int *ptr1 = &x; int **ptr2 = &ptr1; printf(\"%d\", **ptr2);?",
+          "question2": "What is the output of the following code: int x = 5; int *ptr = &x; *ptr = 20; printf(\"%d\", x);?",
+          "score": 0.9536
+        },
+        {
+          "question1": "What is the result of sizeof(float) in C?",
+          "question2": "What is the result of sizeof(float) in C++?",
+          "score": 0.9519
+        },
+        {
+          "question1": "What is the output of cout << ('A' + 1) in a C++ program?",
+          "question2": "What is the output of cout << ('Z' - 'A') in a C++ program?",
+          "score": 0.9519
+        },
+        {
+          "question1": "What is the output of cout << ('a' - 32) in a C++ program?",
+          "question2": "What is the output of cout << (10 << 1) in a C++ program?",
+          "score": 0.9514
+        },
+        {
+          "question1": "What is the output of cout << ('Z' - 'A') in a C++ program?",
+          "question2": "What is the output of cout << ('a' - 32) in a C++ program?",
+          "score": 0.951
+        },
+        {
+          "question1": "What is the output of printf(\"%d\", 'Z' - 'A') in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "score": 0.9489
+        },
+        {
+          "question1": "How do you declare a pointer to a structure person in C?",
+          "question2": "How do you declare a pointer to a structure person in C++?",
+          "score": 0.947
+        },
+        {
+          "question1": "What is the purpose of new operator in C++?",
+          "question2": "What does the new operator do in C++?",
+          "score": 0.9456
+        },
+        {
+          "question1": "How do you access the third element in an array arr of integers in C?",
+          "question2": "How do you access the third element in an array arr of integers in C++?",
+          "score": 0.945
+        },
+        {
+          "question1": "What is the output of the following code: int arr[3] = {10, 20, 30}; int *ptr = arr; printf(\"%d\", *(ptr+1));?",
+          "question2": "What is the output of the following code: int arr[5] = {1, 2, 3, 4, 5}; int *ptr = arr + 2; printf(\"%d\", *ptr);?",
+          "score": 0.9439
+        },
+        {
+          "question1": "Which statement is used to terminate the current iteration of a loop in C?",
+          "question2": "Which statement is used to terminate the current iteration of a loop in C++?",
+          "score": 0.9407
+        },
+        {
+          "question1": "Which type of operator is sizeof in C?",
+          "question2": "Which type of operator is sizeof in C++?",
+          "score": 0.9399
+        },
+        {
+          "question1": "What is the output of the following code: for (int i = 0; i < 3; i++) { if (i == 1) break; printf(\"%d\", i); }?",
+          "question2": "What is the output of the following code: int i = 0; do { printf(\"%d\", i); i++; } while (i < 3);?",
+          "score": 0.9384
+        },
+        {
+          "question1": "What is the result of sizeof(char) in C?",
+          "question2": "What is the result of sizeof(float) in C?",
+          "score": 0.9379
+        },
+        {
+          "question1": "Which statement is used to skip the current iteration of a loop in C++?",
+          "question2": "Which statement is used to skip the current iteration of a loop in C?",
+          "score": 0.9367
+        },
+        {
+          "question1": "How do you dynamically allocate memory for an array of integers in C?",
+          "question2": "How do you dynamically allocate memory for an array of integers in C++?",
+          "score": 0.9356
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the output of printf(\"%d\", 'Z' - 'A') in a C program?",
+          "score": 0.9356
+        },
+        {
+          "question1": "How do you declare a structure variable person with members name and age in C?",
+          "question2": "How do you declare a structure variable person with members name and age in C++?",
+          "score": 0.9346
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { printf(\"%d\", i); i++; }?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { if (i == 1) break; printf(\"%d\", i); }?",
+          "score": 0.9336
+        },
+        {
+          "question1": "What is the output of the following code: for (int i = 0; i < 3; i++) { if (i == 1) break; printf(\"%d\", i); }?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { for (int j = 0; j < 2; j++) { printf(\"%d%d\", i, j); } }?",
+          "score": 0.9336
+        },
+        {
+          "question1": "What is the purpose of fprintf function in C?",
+          "question2": "What is the purpose of the fprintf() function?",
+          "score": 0.9323
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { i++; } printf(\"%d\", i);?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { if (i == 1) break; printf(\"%d\", i); }?",
+          "score": 0.9316
+        },
+        {
+          "question1": "Which statement is used to execute multiple statements within a loop in C?",
+          "question2": "Which statement is used to execute multiple statements within a loop in C++?",
+          "score": 0.9303
+        },
+        {
+          "question1": "What is the result of sizeof(char) in C++?",
+          "question2": "What is the result of sizeof(float) in C++?",
+          "score": 0.928
+        },
+        {
+          "question1": "How do you achieve function overriding in C++?",
+          "question2": "What is function overriding in C++?",
+          "score": 0.9273
+        },
+        {
+          "question1": "Which operator is used to access the value at the address pointed to by a pointer in C?",
+          "question2": "Which operator is used to access the value of a variable pointed to by a pointer?",
+          "score": 0.926
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5.0 / 2) in a C program?",
+          "score": 0.9255
+        },
+        {
+          "question1": "What is the result of printf(\"%f\", 5 / 2) in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "score": 0.9251
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the output of printf(\"%s\", \"Hello, World!\") in a C program?",
+          "score": 0.9243
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; do { printf(\"%d\", i); i++; } while (i < 3);?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { for (int j = 0; j < 2; j++) { printf(\"%d%d\", i, j); } }?",
+          "score": 0.9232
+        },
+        {
+          "question1": "What is the output of cout << ('Z' - 'A') in a C++ program?",
+          "question2": "What is the output of cout << (10 << 1) in a C++ program?",
+          "score": 0.9219
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the output of printf(\"%d\", 10 << 1) in a C program?",
+          "score": 0.9218
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5.0 / 2) in a C program?",
+          "score": 0.9217
+        },
+        {
+          "question1": "What is a structure in C?",
+          "question2": "What is the correct way to define a structure in C?",
+          "score": 0.9208
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5 / 2) in a C program?",
+          "score": 0.9192
+        },
+        {
+          "question1": "What is the output of the following code: struct Point { int x, y; }; struct Point p = {10, 20}; printf(\"%d %d\", p.x, p.y);?",
+          "question2": "What is the output of the following code: struct Data { int i; float f; } d1, d2; d1.i = 5; d2 = d1; printf(\"%d\", d2.i);?",
+          "score": 0.919
+        },
+        {
+          "question1": "What is the output of printf(\"%s\", \"Hello, World!\") in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "score": 0.918
+        },
+        {
+          "question1": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "question2": "What is the output of printf(\"%d\", 10 << 1) in a C program?",
+          "score": 0.9174
+        },
+        {
+          "question1": "What is the result of cout << 5 / 2 in a C++ program?",
+          "question2": "What is the output of cout << (10 << 1) in a C++ program?",
+          "score": 0.9167
+        },
+        {
+          "question1": "How do you declare an array of 10 integers in C?",
+          "question2": "How do you declare an array of 10 integers in C++?",
+          "score": 0.9166
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { printf(\"%d\", i); i++; }?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { for (int j = 0; j < 2; j++) { printf(\"%d%d\", i, j); } }?",
+          "score": 0.914
+        },
+        {
+          "question1": "How do you declare a multi-dimensional array in C?",
+          "question2": "How do you declare a multi-dimensional array in C++?",
+          "score": 0.9138
+        },
+        {
+          "question1": "What is the result of cout << 5.0 / 2 in a C++ program?",
+          "question2": "What is the output of cout << (10 << 1) in a C++ program?",
+          "score": 0.9112
+        },
+        {
+          "question1": "What is the output of cout << ('A' + 1) in a C++ program?",
+          "question2": "What is the result of cout << 5 / 2 in a C++ program?",
+          "score": 0.9109
+        },
+        {
+          "question1": "What is the output of printf(\"%d\", 'Z' - 'A') in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5.0 / 2) in a C program?",
+          "score": 0.9108
+        },
+        {
+          "question1": "What is the output of printf(\"%d\", sizeof(int)) in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'a' - 32) in a C program?",
+          "score": 0.9105
+        },
+        {
+          "question1": "What is function overloading in C++?",
+          "question2": "What is function overloading?",
+          "score": 0.9096
+        },
+        {
+          "question1": "What is the output of printf(\"%d\", 'Z' - 'A') in a C program?",
+          "question2": "What is the result of printf(\"%f\", 5 / 2) in a C program?",
+          "score": 0.9084
+        },
+        {
+          "question1": "What is the output of the following code: int i = 0; while (i < 3) { i++; } printf(\"%d\", i);?",
+          "question2": "What is the output of the following code: for (int i = 0; i < 3; i++) { for (int j = 0; j < 2; j++) { printf(\"%d%d\", i, j); } }?",
+          "score": 0.9077
+        },
+        {
+          "question1": "What is the purpose of the return statement in a C function?",
+          "question2": "What is the purpose of the return statement in a function?",
+          "score": 0.9076
+        },
+        {
+          "question1": "Which operator is used to access the value at the address pointed to by a pointer in C++?",
+          "question2": "Which operator is used to access the value of a variable pointed to by a pointer?",
+          "score": 0.9068
+        },
+        {
+          "question1": "What is the output of printf(\"%s\", \"Hello, World!\") in a C program?",
+          "question2": "What is the output of printf(\"%d\", 'Z' - 'A') in a C program?",
+          "score": 0.9067
+        },
+        {
+          "question1": "What is the result of printf(\"%f\", 5.0 / 2) in a C program?",
+          "question2": "What is the output of printf(\"%d\", 10 << 1) in a C program?",
+          "score": 0.9057
+        },
+        {
+          "question1": "Which of the following is true about functions in C?",
+          "question2": "Which of the following is not true about functions in C?",
+          "score": 0.9018
+        },
+        {
+          "question1": "What is the output of cout << ('A' + 1) in a C++ program?",
+          "question2": "What is the result of cout << 5.0 / 2 in a C++ program?",
+          "score": 0.9012
+        },
+        {
+          "question1": "What is the output of printf(\"%d\", sizeof(int)) in a C program?",
+          "question2": "What is the output of printf(\"%c\", 'A' + 1) in a C program?",
+          "score": 0.9011
+        },
+        {
+          "question1": "What is the result of sizeof(float) in C?",
+          "question2": "What is the result of sizeof(char) in C++?",
+          "score": 0.9006
+        }
+      ]
+    },
+    "CoreJAVA": {
+      "file": "CoreJAVA_Questions_310_updated.xlsx",
+      "total_questions": 295,
+      "duplicate_pairs_count": 12,
+      "duplicate_pairs": [
+        {
+          "question1": "If a variable is declared final, it must include \u2026\u2026\u2026\u2026\u2026\u2026\u2026. value.",
+          "question2": "If a variable is declared FINAL, it must include \u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026. value.",
+          "score": 0.9996
+        },
+        {
+          "question1": "\u2026\u2026\u2026\u2026\u2026\u2026\u2026.is the key to \u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026",
+          "question2": "\u2026\u2026\u2026\u2026\u2026\u2026\u2026.. is the key to \u2026\u2026\u2026\u2026\u2026\u2026",
+          "score": 0.9973
+        },
+        {
+          "question1": "___________ means each method in multithreaded environment doesn\u2019t access data by multiple threads at the same time.",
+          "question2": "___________ means each method in a multithreaded environment doesn\u2019t access data by multiple threads at the same time",
+          "score": 0.9942
+        },
+        {
+          "question1": "Using which keyword we can access the value of the instance variables and class variables of that class inside the method of that class itself.",
+          "question2": "Using which keyword can we access the value of the instance and class variables of that class inside the method of that class itself?",
+          "score": 0.9871
+        },
+        {
+          "question1": "If m and n are int type variables, what will be the result of the expression m%n when m=5 and n=2 ?",
+          "question2": "If m and n are int type variables, what will be the result of the expression m%n when m=-14 and n=-3?",
+          "score": 0.9756
+        },
+        {
+          "question1": "Which of the following do not represent legal flow control statements?",
+          "question2": "Which of the following represent legal flow control statements?",
+          "score": 0.9468
+        },
+        {
+          "question1": "Which of the following do not represent legal flow control statements?",
+          "question2": "Which of the following is NOT a legal flow control statement?",
+          "score": 0.946
+        },
+        {
+          "question1": "The command javac is used to",
+          "question2": "The command javac",
+          "score": 0.9446
+        },
+        {
+          "question1": "In Java, a string is a \u2026\u2026\u2026\u2026.",
+          "question2": "In Java, a string is a",
+          "score": 0.9329
+        },
+        {
+          "question1": "When a programming class implements an interface, it must provide behavior for",
+          "question2": "When a program class implements an interface, it must provide",
+          "score": 0.9181
+        },
+        {
+          "question1": "Which of the following represent legal flow control statements?",
+          "question2": "Which of the following is NOT a legal flow control statement?",
+          "score": 0.9139
+        },
+        {
+          "question1": "Which of the following keywords are used to control access to a class member? i) default ii) abstract iii) protected iv) interface v) public",
+          "question2": "Which of the following keywords are used to control access to a class member?\n(1) Public\n(2) Private\n(3) Protected\n(4) Interface",
+          "score": 0.9034
+        }
+      ]
+    },
+    "DBT": {
+      "file": "DBT_Questions_280_updated.xlsx",
+      "total_questions": 279,
+      "duplicate_pairs_count": 23,
+      "duplicate_pairs": [
+        {
+          "question1": "Which SQL command is used to retrieve data from a database?",
+          "question2": "Which SQL command is used to retrieve data?",
+          "score": 0.977
+        },
+        {
+          "question1": "What is a JOIN in SQL?",
+          "question2": "What is an SQL JOIN?",
+          "score": 0.9757
+        },
+        {
+          "question1": "What does a composite key consist of?",
+          "question2": "What is a composite key?",
+          "score": 0.9753
+        },
+        {
+          "question1": "What does the View Updating Rule specify?",
+          "question2": "What does the View Updating Rule entail?",
+          "score": 0.9717
+        },
+        {
+          "question1": "Which clause is used to filter records in a SQL query?",
+          "question2": "Which SQL clause is used to filter records?",
+          "score": 0.9714
+        },
+        {
+          "question1": "Which SQL operator is used to compare a value to a specified list of values?",
+          "question2": "Which operator in SQL is used to compare a value to a set of values?",
+          "score": 0.9692
+        },
+        {
+          "question1": "What is NoSQL?",
+          "question2": "What does NoSQL stand for?",
+          "score": 0.9579
+        },
+        {
+          "question1": "What is an Entity-Relationship Diagram (ERD)?",
+          "question2": "What is an Entity-Relationship (ER) diagram used for?",
+          "score": 0.9488
+        },
+        {
+          "question1": "What is a trigger in a database?",
+          "question2": "What is a database trigger?",
+          "score": 0.9472
+        },
+        {
+          "question1": "What does the UNION operator do in SQL?",
+          "question2": "What is the purpose of a 'UNION' operator in SQL?",
+          "score": 0.947
+        },
+        {
+          "question1": "What is a JOIN in SQL?",
+          "question2": "What is the purpose of the 'JOIN' operation in SQL?",
+          "score": 0.9415
+        },
+        {
+          "question1": "Which of the following is a type of NoSQL database?",
+          "question2": "Which of the following is a NoSQL database?",
+          "score": 0.9401
+        },
+        {
+          "question1": "What is the purpose of the High-Level Insert, Update, and Delete Rule?",
+          "question2": "What is the requirement of the High-Level Insert, Update, and Delete Rule?",
+          "score": 0.9353
+        },
+        {
+          "question1": "What is the purpose of an index in a database?",
+          "question2": "What is an index in a database?",
+          "score": 0.9328
+        },
+        {
+          "question1": "What is the purpose of an index in a database?",
+          "question2": "What is the role of an index in a database?",
+          "score": 0.9305
+        },
+        {
+          "question1": "What is the purpose of the 'JOIN' operation in SQL?",
+          "question2": "What is an SQL JOIN?",
+          "score": 0.925
+        },
+        {
+          "question1": "What is an index in a database?",
+          "question2": "What is the role of an index in a database?",
+          "score": 0.924
+        },
+        {
+          "question1": "What symbol is commonly used to represent an entity in an ERD?",
+          "question2": "What symbol is commonly used to represent an attribute in an ERD?",
+          "score": 0.9229
+        },
+        {
+          "question1": "Which type of cursor reflects changes made to the underlying data while it is open?",
+          "question2": "Which cursor type does not reflect changes made to the underlying data after the cursor is opened?",
+          "score": 0.9167
+        },
+        {
+          "question1": "What is a view in a database?",
+          "question2": "What is a view in SQL?",
+          "score": 0.916
+        },
+        {
+          "question1": "What is a cursor in SQL?",
+          "question2": "Which SQL statement is used to define a cursor?",
+          "score": 0.9155
+        },
+        {
+          "question1": "What is the first rule in Codd's 12 rules for RDBMS?",
+          "question2": "What is Codd\u2019s first rule for RDBMS?",
+          "score": 0.9132
+        },
+        {
+          "question1": "What symbol is commonly used to represent an entity in an ERD?",
+          "question2": "What symbol is commonly used to represent a relationship in an ERD?",
+          "score": 0.9052
+        }
+      ]
+    },
+    "DotNet": {
+      "file": "Net_Qestion_bank_285.xlsx",
+      "total_questions": 282,
+      "duplicate_pairs_count": 23,
+      "duplicate_pairs": [
+        {
+          "question1": "Syntax for closing and opening the connection in ADO.net is:",
+          "question2": "Syntax for closing and opening the connection in ADO.net is :",
+          "score": 1.0
+        },
+        {
+          "question1": "How instantiate the DataReader?",
+          "question2": "How instantiate the DataReader ?",
+          "score": 1.0
+        },
+        {
+          "question1": "What is the Web.config file used for?",
+          "question2": "What is the Web.config file used for ?",
+          "score": 1.0
+        },
+        {
+          "question1": "To use the .NET Framework Data Provider for SQL Server, an application must reference the _____________ namespace.",
+          "question2": "To use the .NET Framework Data Provider for SQL Server, an application must reference the ___________ namespace.",
+          "score": 0.9986
+        },
+        {
+          "question1": "In Inheritance concept, which of the following members of the base class are accessible to derived class members?",
+          "question2": "In Inheritance concept, which of the following members of base class are accessible to derived class members?",
+          "score": 0.9975
+        },
+        {
+          "question1": "To populate the data set, which method of DataAdapter is used?",
+          "question2": "To populate the data set, which method of DataAdapter is used",
+          "score": 0.997
+        },
+        {
+          "question1": "When we need to retrieve only a single value from the Database,which Method is efficient?",
+          "question2": "When we need to retrieve only a single value from the Database, which Method is efficient",
+          "score": 0.9964
+        },
+        {
+          "question1": "WCF services can communicate with _______.",
+          "question2": "WCF services can communicate with ___________",
+          "score": 0.9963
+        },
+        {
+          "question1": "Which interface do you have to implement to get the reference of ObjectContext from DBContext?",
+          "question2": "Which interface you have to implement to get the reference of ObjectContext from DBContext?",
+          "score": 0.9925
+        },
+        {
+          "question1": "What window in Visual Studio displays CSDL, MSL, and SSDL of Entity Framework?",
+          "question2": "What window in Visual Studio display CSDL, MSL and SSDL of Entity Framework?",
+          "score": 0.9918
+        },
+        {
+          "question1": "If we are not returning any records from the database which method is used?",
+          "question2": "If we are not returning any records from the database which method is used",
+          "score": 0.9904
+        },
+        {
+          "question1": "Shared Assemblies are installed at:",
+          "question2": "Shared Assemblies are installed at",
+          "score": 0.9899
+        },
+        {
+          "question1": "What is the purpose of the ViewBag object in ASP.NET MVC?",
+          "question2": "What is the purpose of the ViewBag object in an ASP.NET MVC view?",
+          "score": 0.988
+        },
+        {
+          "question1": "Which of the following classes is used to encapsulate IP address and DNS?",
+          "question2": "Which of these classes is used to encapsulate IP address and DNS?",
+          "score": 0.9752
+        },
+        {
+          "question1": "If no access modifier for a member of a class is specified, then class member accessibility is defined as?",
+          "question2": "If no access modifier for a class is specified, then class accessibility is defined as?",
+          "score": 0.9649
+        },
+        {
+          "question1": "Which of the following is not a valid action result in ASP.NET MVC?",
+          "question2": "Which of the following is not a valid action result type in ASP.NET MVC?",
+          "score": 0.9578
+        },
+        {
+          "question1": "What is the purpose of the [HttpPost] attribute in an ASP.NET MVC controller action?",
+          "question2": "What is the purpose of the HttpPost attribute in an ASP.NET MVC controller action?",
+          "score": 0.951
+        },
+        {
+          "question1": "What is the purpose of the RedirectToAction method in an ASP.NET MVC controller?",
+          "question2": "What is the purpose of the RedirectToRoute method in an ASP.NET MVC controller?",
+          "score": 0.9328
+        },
+        {
+          "question1": "Which is the correct statement about the namespaces in C#.NET?",
+          "question2": "Which among the following is a correct statement about namespace used in C#.NET?",
+          "score": 0.9318
+        },
+        {
+          "question1": "Which among the following is a correct statement about namespace used in C#.NET?",
+          "question2": "Which among the following statements are not correct about a namespace used in C#.NET?",
+          "score": 0.9205
+        },
+        {
+          "question1": "An XML-based language that describes the storage model of an Entity Framework application is called",
+          "question2": "An XML-based language that describes the mapping between the conceptual model and storage model of an Entity Framework Application is called",
+          "score": 0.9195
+        },
+        {
+          "question1": "What is the purpose of the [Authorize] attribute in an ASP.NET MVC controller?",
+          "question2": "What is the purpose of the Authorize attribute in an ASP.NET MVC controller?",
+          "score": 0.913
+        },
+        {
+          "question1": "What is meant by preprocessor directive in C#.NET?",
+          "question2": "What is meant by preprocessor directive #define?",
+          "score": 0.9046
+        }
+      ]
+    },
+    "OS_SDM": {
+      "file": "OS&SDM_Questions_265.xlsx",
+      "total_questions": 262,
+      "duplicate_pairs_count": 9,
+      "duplicate_pairs": [
+        {
+          "question1": "What is a Kubernetes DaemonSet?",
+          "question2": "What is Kubernetes DaemonSet?",
+          "score": 0.9939
+        },
+        {
+          "question1": "What is Kubernetes Secret?",
+          "question2": "What is a Kubernetes Secret?",
+          "score": 0.9916
+        },
+        {
+          "question1": "What is a Kubernetes StatefulSet?",
+          "question2": "What is Kubernetes StatefulSet?",
+          "score": 0.9901
+        },
+        {
+          "question1": "What is Kubernetes?",
+          "question2": "What is Kubernetes Kubelet?",
+          "score": 0.9326
+        },
+        {
+          "question1": "What is Kubernetes Kubelet?",
+          "question2": "What is Kubernetes Kubectl?",
+          "score": 0.927
+        },
+        {
+          "question1": "What is Kubernetes?",
+          "question2": "What is a Kubernetes Pod?",
+          "score": 0.9168
+        },
+        {
+          "question1": "What is Kubernetes?",
+          "question2": "What is Kubernetes Kubectl?",
+          "score": 0.9113
+        },
+        {
+          "question1": "Which of the following is black box testing?",
+          "question2": "Which of the following is a black-box testing technique?",
+          "score": 0.907
+        },
+        {
+          "question1": "What is Kubernetes?",
+          "question2": "What is a Kubernetes Service?",
+          "score": 0.901
+        }
+      ]
+    },
+    "WebTech": {
+      "file": "QuestionBank Webtech 387.xlsx",
+      "total_questions": 381,
+      "duplicate_pairs_count": 32,
+      "duplicate_pairs": [
+        {
+          "question1": "Where are the captured values populated regarding the route parameters?",
+          "question2": "Where are the captured values populated regarding route parameters?",
+          "score": 0.994
+        },
+        {
+          "question1": "Which of the following method is not a part of ReactDOM?",
+          "question2": "Which of the following is method is not a part of ReactDOM?",
+          "score": 0.9865
+        },
+        {
+          "question1": "Which of the following jQuery method gets the html contents innerHTML of the first matched element?",
+          "question2": "Which of the following jQuery method gets the html contents (innerHTML) of the first matched element?",
+          "score": 0.9863
+        },
+        {
+          "question1": "Which of the following jQuery method sets the height property of an element?",
+          "question2": "Which of the following jQuery method gets the height property of an element?",
+          "score": 0.983
+        },
+        {
+          "question1": "Which of the following jQuery method finds all sibling elements after the current element?",
+          "question2": "Which of the following jQuery method finds all sibling elements in front of the current element?",
+          "score": 0.9791
+        },
+        {
+          "question1": "Which of the following class in Bootstrap is used for creating the large size modals?",
+          "question2": "Which of the following class in Bootstrap is used for creating the small size modals?",
+          "score": 0.9775
+        },
+        {
+          "question1": "Which of the following jQuery method sets the width property of an element?",
+          "question2": "Which of the following jQuery method gets the width property of an element?",
+          "score": 0.9769
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing the unique previous siblings of each of the matched set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing all of the unique siblings of each of the matched set of elements?",
+          "score": 0.9759
+        },
+        {
+          "question1": "Which of the following jQuery selector select elements whose css class is some-class?",
+          "question2": "Which of the following jQuery selector select elements whose css class is someclass?",
+          "score": 0.9729
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing the unique next siblings of each of the given set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing the unique previous siblings of each of the matched set of elements?",
+          "score": 0.9704
+        },
+        {
+          "question1": "Which of the following jQuery method gets the style property of an element?",
+          "question2": "Which of the following jQuery method sets the style property of an element?",
+          "score": 0.9678
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing the unique next siblings of each of the given set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing all of the unique siblings of each of the matched set of elements?",
+          "score": 0.9673
+        },
+        {
+          "question1": "Which of the following is correct about Hex Code format of CSS colors?",
+          "question2": "Which of the following is correct about Short Hex Code format of CSS colors?",
+          "score": 0.9575
+        },
+        {
+          "question1": "Which of the following function arguments are available to Express.js Route handlers?",
+          "question2": "Which of the following arguments are available in an Express JS route handler function?",
+          "score": 0.9516
+        },
+        {
+          "question1": "Which of the following property is used to add or subtract space between the letters that make up a word?",
+          "question2": "Which of the following property is used to add or subtract space between the words of a sentence?",
+          "score": 0.9513
+        },
+        {
+          "question1": "Which of the following is used to pass data to a component from outside in React.js?",
+          "question2": "Which of the following is used to pass data to a component from outside in React?",
+          "score": 0.9497
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing all of the unique immediate children of each of the matched set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing all of the unique siblings of each of the matched set of elements?",
+          "score": 0.9466
+        },
+        {
+          "question1": "The class used for creating the large size wells is -",
+          "question2": "The class used for creating the small size wells is -",
+          "score": 0.9421
+        },
+        {
+          "question1": "Which of the following command will show all the modules installed globally?",
+          "question2": "Which of the following command will show all the modules installed locally.",
+          "score": 0.9301
+        },
+        {
+          "question1": "In which of the following directory React Components are saved?",
+          "question2": "In which of the following directory React.js components are saved?",
+          "score": 0.9293
+        },
+        {
+          "question1": "Which of the following jQuery method sets the text of an element?",
+          "question2": "Which of the following jQuery method set the value of an element?",
+          "score": 0.9256
+        },
+        {
+          "question1": "Which of the following jQuery method apply a style on an element?",
+          "question2": "Which of the following jQuery method sets the style property of an element?",
+          "score": 0.9245
+        },
+        {
+          "question1": "Which of the following jQuery method gets the inner height excluding the border of an element?",
+          "question2": "Which of the following jQuery method returns the outer height including the border of an element?",
+          "score": 0.9239
+        },
+        {
+          "question1": "Which of the following selector matches an element based on its class attribute?",
+          "question2": "Which of the following selector matches an element based on its id?",
+          "score": 0.9215
+        },
+        {
+          "question1": "Which of the following function of Boolean object returns a string containing the source of the Boolean object?",
+          "question2": "Which of the following function of Boolean object returns the primitive value of the Boolean object?",
+          "score": 0.9208
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing all of the unique immediate children of each of the matched set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing the unique next siblings of each of the given set of elements?",
+          "score": 0.916
+        },
+        {
+          "question1": "Which of the following property of an anchor element signifies an element that currently has the user's mouse pointer hovering over it?",
+          "question2": "Which of the following property of an anchor element signifies an element on which the user is currently clicking?",
+          "score": 0.9143
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing all of the unique immediate children of each of the matched set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing the unique previous siblings of each of the matched set of elements?",
+          "score": 0.913
+        },
+        {
+          "question1": "Which of the following jQuery method apply a style on an element?",
+          "question2": "Which of the following jQuery method gets the style property of an element?",
+          "score": 0.9129
+        },
+        {
+          "question1": "Which of the following jQuery method gets attributes of an element?",
+          "question2": "Which of the following jQuery method sets attributes of an element?",
+          "score": 0.9106
+        },
+        {
+          "question1": "Which of the following jQuery selector selects all elements available in a DOM?",
+          "question2": "Which of the following jQuery selector selects elements with the given element tag-name?",
+          "score": 0.9005
+        },
+        {
+          "question1": "Which of the following jQuery method gets a set of elements containing the unique ancestors of the matched set of elements?",
+          "question2": "Which of the following jQuery method gets a set of elements containing the unique previous siblings of each of the matched set of elements?",
+          "score": 0.9001
+        }
+      ]
+    },
+    "AdvJAVA": {
+      "file": "QuestionBank advJAVA 283.xlsx",
+      "total_questions": 268,
+      "duplicate_pairs_count": 11,
+      "duplicate_pairs": [
+        {
+          "question1": "One of the following JSTL tag performs URL rewriting.",
+          "question2": "One of the following JSTL tag performs URL rewriting",
+          "score": 0.997
+        },
+        {
+          "question1": "What is the root level element in hibernate mapping file?",
+          "question2": "What is the root level element in a hibernate mapping file?",
+          "score": 0.996
+        },
+        {
+          "question1": "Which of the following method is not used to retrieve request parameters?",
+          "question2": "Which of the following method is not used to retrieve request parameters",
+          "score": 0.9912
+        },
+        {
+          "question1": "Select the correct statement",
+          "question2": "Select the correct statement.",
+          "score": 0.9851
+        },
+        {
+          "question1": "Select the correct statement",
+          "question2": "Select correct statement",
+          "score": 0.9655
+        },
+        {
+          "question1": "Which Spring annotation is used to handle HTTP GET requests?",
+          "question2": "Which Spring annotation is used to handle HTTP PUT requests?",
+          "score": 0.9618
+        },
+        {
+          "question1": "Which Spring annotation is used to handle HTTP POST requests?",
+          "question2": "Which Spring annotation is used to handle HTTP GET requests?",
+          "score": 0.961
+        },
+        {
+          "question1": "Which Spring annotation is used to handle HTTP POST requests?",
+          "question2": "Which Spring annotation is used to handle HTTP PUT requests?",
+          "score": 0.955
+        },
+        {
+          "question1": "Select correct statement",
+          "question2": "Select the correct statement.",
+          "score": 0.9374
+        },
+        {
+          "question1": "Which Hibernate mapping type is used to represent a one-to-many association?",
+          "question2": "Which association mapping type is used to represent a many-to-many association in Hibernate?",
+          "score": 0.9212
+        },
+        {
+          "question1": "Which Spring annotation is used to handle HTTP GET requests?",
+          "question2": "Which Spring annotation is used to handle HTTP DELETE requests?",
+          "score": 0.906
+        }
+      ]
+    }
+  }
+}
