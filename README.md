@@ -1,15 +1,15 @@
-# Question Generation — RAG MCQ Generator
+# Question Generation - RAG MCQ Generator
 
-A terminal-based MCQ (Multiple Choice Question) generator powered by **Groq API** (`openai/gpt-oss-120b`) and a local RAG pipeline.
+A document-to-question workflow with tagging and similarity review in the terminal app.
 
 ## Features
 
 - 📁 Upload documents (PDF, DOCX, TXT) and generate MCQs from them
 - 🤖 LLM-powered question generation via **Groq API**
-- 🏷️ Auto-tag questions with concept tags (e.g. `binary search`, `sql`, `neural network`)
-- 📂 Upload existing MCQ files (JSON/CSV, any structure) and auto-tag them
-- ✏️ Manually correct tags question-by-question
+- 🏷️ Auto-tag questions with hierarchical tags: `main_tag` + `sub_tags`
+- 📂 Upload existing MCQ files (JSON/CSV, flexible structures)
 - 🔄 Refine questions with feedback
+- 🔍 Similarity check using fine-tuned sentence-transformer model
 - 📤 Export to JSON or CSV
 
 ## Setup
@@ -34,9 +34,20 @@ cp .env.example .env
 ```
 Get a free key at: https://console.groq.com
 
-### 4. Run
+### 4. Run the terminal app
 ```bash
 python terminal_app.py
+```
+
+### 5. Similarity model path
+By default the app loads:
+
+`/Users/k/rag_questions/similiarty /mcq_intent_model`
+
+You can override with:
+
+```bash
+export MODEL_PATH=/absolute/path/to/your/fine_tuned_model
 ```
 
 ## Menu Options
@@ -49,16 +60,39 @@ python terminal_app.py
 | 4 | Refine MCQs with feedback |
 | 5 | Export MCQs to JSON or CSV |
 | 6 | Clear all data |
-| 7 | Upload an existing MCQ file (auto-tags untagged questions) |
-| 8 | Manually correct question tags |
+| 7 | Upload an existing MCQ file (JSON/CSV) |
+| 8 | Auto tag MCQs (`main_tag` + `sub_tags`) |
+| 9 | Similarity check |
+
+## JSON Output Format
+
+When exporting JSON, the output keeps hierarchical tags and omits legacy `category`/`tags` fields.
+
+Example:
+
+```json
+{
+	"question": "What is the capital of France?",
+	"options": {
+		"A": "London",
+		"B": "Berlin",
+		"C": "Paris",
+		"D": "Madrid"
+	},
+	"correct_answer": "Paris",
+	"explanation": "",
+	"main_tag": "Social Sciences",
+	"sub_tags": ["Geography", "European capitals", "France"]
+}
+```
 
 ## Project Structure
 
 ```
 ├── terminal_app.py       # Main terminal application
-├── mcq_generator.py      # Groq API integration + auto-tagging
+├── mcq_generator.py      # Groq API integration + hierarchical tagging
 ├── rag_system.py         # RAG pipeline with ChromaDB
-├── question_tagger.py    # Keyword-based tagger
+├── question_tagger.py    # Local hierarchical question tagger
 ├── document_processor.py # PDF/DOCX/TXT text extraction
 ├── config.py             # Configuration (reads from .env)
 ├── requirements.txt      # Python dependencies
